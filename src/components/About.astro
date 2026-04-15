@@ -1,0 +1,184 @@
+---
+// About.astro — About section with mission/vision and trust indicators
+---
+
+<section id="nosotros" class="section about-section">
+  <div class="about-glow glow-orb glow-orb-accent" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label reveal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Nosotros
+      </span>
+      <h2 class="reveal" data-delay="0.1">Somos <span class="text-gradient">División Digital</span></h2>
+      <p class="reveal" data-delay="0.2">
+        Un equipo apasionado por transformar negocios a través de tecnología
+        e-commerce de vanguardia y soluciones de inteligencia artificial.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <!-- Mission -->
+      <div class="about-card card reveal" data-delay="0.2">
+        <div class="about-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <h3>Nuestra Misión</h3>
+        <p>
+          Democratizar el comercio electrónico brindando plataformas tecnológicas accesibles, potentes
+          y con inteligencia artificial integrada. Cada negocio merece vender en línea de forma profesional.
+        </p>
+      </div>
+
+      <!-- Vision -->
+      <div class="about-card card reveal" data-delay="0.3">
+        <div class="about-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3>Nuestra Visión</h3>
+        <p>
+          Ser la agencia líder en soluciones e-commerce con IA en Latinoamérica,
+          impulsando la transformación digital de miles de empresas con tecnología innovadora.
+        </p>
+      </div>
+
+      <!-- Values -->
+      <div class="about-card card reveal" data-delay="0.4">
+        <div class="about-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <h3>Nuestros Valores</h3>
+        <p>
+          Innovación constante, calidad premium en cada línea de código,
+          transparencia total con nuestros clientes y compromiso con resultados medibles.
+        </p>
+      </div>
+    </div>
+
+    <!-- Trust indicators -->
+    <div class="trust-bar reveal" data-delay="0.4">
+      <div class="trust-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <span>Código Seguro</span>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <span>Pagos Integrados</span>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        <span>Soporte Premium</span>
+      </div>
+      <div class="trust-divider"></div>
+      <div class="trust-item">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span>Alto Rendimiento</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-section {
+    background: var(--bg-secondary);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-glow {
+    width: 500px;
+    height: 500px;
+    left: -200px;
+    top: 30%;
+    opacity: 0.06;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-3xl);
+  }
+
+  .about-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-2xl) var(--space-xl);
+  }
+
+  .about-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent-subtle);
+    border: 1px solid var(--glass-border);
+    color: var(--accent);
+  }
+
+  .about-card h3 {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+  }
+
+  .about-card p {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  /* Trust bar */
+  .trust-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xl);
+    padding: var(--space-xl) var(--space-2xl);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(16px);
+    flex-wrap: wrap;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .trust-item svg {
+    color: var(--accent);
+  }
+
+  .trust-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--glass-border-subtle);
+  }
+
+  @media (max-width: 768px) {
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .trust-bar {
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+    }
+
+    .trust-divider {
+      display: none;
+    }
+  }
+</style>

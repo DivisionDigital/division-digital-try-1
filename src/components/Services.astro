@@ -1,0 +1,150 @@
+---
+// Services.astro — Service offerings grid with glassmorphism cards
+const services = [
+  {
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+    title: 'E-Commerce Personalizado',
+    description: 'Diseñamos y desarrollamos tiendas online a medida, adaptadas a tu industria. Desde catálogos de miles de productos hasta sistemas de cotización inteligente.',
+  },
+  {
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>`,
+    title: 'Chat Multiagente con IA',
+    description: 'Integración de chatbots inteligentes que atienden a tus clientes 24/7. Múltiples agentes especializados que responden, cotizan y gestionan pedidos automáticamente.',
+  },
+  {
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M6 8h.01"/><path d="M10 8h4"/><path d="M6 12h.01"/><path d="M10 12h4"/></svg>`,
+    title: 'Catálogo Inteligente',
+    description: 'Sistemas de gestión de productos con búsqueda avanzada, filtros dinámicos y categorización automática. Maneja miles de SKUs sin complicaciones.',
+  },
+  {
+    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/><path d="M14.05 2a9 9 0 0 1 8 7.94"/><path d="M14.05 6A5 5 0 0 1 18 10"/></svg>`,
+    title: 'Integración WhatsApp',
+    description: 'Conecta tu tienda directamente con WhatsApp Business. Consultas de productos, cotizaciones y seguimiento de pedidos desde la app que todos usan.',
+  },
+];
+---
+
+<section id="servicios" class="section services-section">
+  <!-- Background decoration -->
+  <div class="services-glow glow-orb glow-orb-accent" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label reveal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Nuestros Servicios
+      </span>
+      <h2 class="reveal" data-delay="0.1">Soluciones <span class="text-gradient">E-Commerce</span> Completas</h2>
+      <p class="reveal" data-delay="0.2">
+        Construimos plataformas de venta digital de principio a fin, con tecnología de punta y atención inteligente.
+      </p>
+    </div>
+
+    <div class="services-grid">
+      {services.map((service, i) => (
+        <div class="service-card card reveal" data-delay={String(0.1 + i * 0.12)}>
+          <div class="service-icon" set:html={service.icon} />
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+          <div class="service-line"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-section {
+    position: relative;
+    background: var(--bg-secondary);
+  }
+
+  .services-glow {
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.06;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    position: relative;
+    z-index: 1;
+  }
+
+  .service-card {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top left, var(--accent-subtle), transparent 60%);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .service-card:hover::before {
+    opacity: 1;
+  }
+
+  .service-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    background: var(--accent-subtle);
+    border: 1px solid var(--glass-border);
+    color: var(--accent);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .service-card h3 {
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+  }
+
+  .service-card p {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+  }
+
+  .service-line {
+    height: 2px;
+    width: 40px;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-full);
+    transition: width var(--transition-base);
+    position: relative;
+    z-index: 1;
+  }
+
+  .service-card:hover .service-line {
+    width: 80px;
+  }
+
+  @media (max-width: 768px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

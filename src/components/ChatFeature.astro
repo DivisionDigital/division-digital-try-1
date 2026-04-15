@@ -1,0 +1,366 @@
+---
+// ChatFeature.astro — Multi-agent chat feature highlight with animated chat UI
+---
+
+<section id="chat-feature" class="section chat-section">
+  <div class="chat-glow glow-orb glow-orb-accent" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="chat-layout">
+      <!-- Left: Info -->
+      <div class="chat-info">
+        <span class="section-label reveal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Chat Multiagente
+        </span>
+        <h2 class="reveal" data-delay="0.1">
+          Atención <span class="text-gradient">24/7</span> con Inteligencia Artificial
+        </h2>
+        <p class="chat-desc reveal" data-delay="0.2">
+          Integramos chatbots inteligentes en tu e-commerce que atienden a tus clientes automáticamente. Múltiples agentes especializados trabajan juntos para resolver consultas, cotizar productos y cerrar ventas.
+        </p>
+
+        <ul class="chat-features reveal" data-delay="0.3">
+          <li>
+            <div class="check-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span>Respuestas instantáneas sobre productos y disponibilidad</span>
+          </li>
+          <li>
+            <div class="check-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span>Cotizaciones automáticas personalizadas</span>
+          </li>
+          <li>
+            <div class="check-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span>Escalamiento inteligente a agente humano</span>
+          </li>
+          <li>
+            <div class="check-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span>Integración directa con WhatsApp Business</span>
+          </li>
+        </ul>
+
+        <a href="#contacto" class="btn btn-primary reveal" data-delay="0.4">
+          Quiero este Chat para mi Negocio
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <!-- Right: Chat Preview -->
+      <div class="chat-preview reveal-scale" data-delay="0.3">
+        <div class="chat-window">
+          <div class="chat-window-header">
+            <div class="chat-avatar">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect x="8" y="8" width="8" height="8" rx="1"/><path d="M4 12h4"/><path d="M16 12h4"/><path d="M12 16v4"/></svg>
+            </div>
+            <div class="chat-header-info">
+              <span class="chat-agent-name">Agente IA</span>
+              <span class="chat-status">
+                <span class="status-dot"></span>
+                En línea
+              </span>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-bubble bot" data-chat-delay="0">
+              <p>¡Hola! 👋 Soy el asistente de tu tienda. ¿En qué puedo ayudarte?</p>
+              <span class="chat-time">Ahora</span>
+            </div>
+            <div class="chat-bubble user" data-chat-delay="1">
+              <p>Necesito cotizar cables THHN calibre 12</p>
+              <span class="chat-time">Ahora</span>
+            </div>
+            <div class="chat-bubble bot" data-chat-delay="2">
+              <p>¡Claro! Tenemos Alambre THHN N°12 disponible en varios colores. El precio por rollo de 100m es desde <strong>$185.000 COP</strong>. ¿Cuántos rollos necesitas?</p>
+              <span class="chat-time">Ahora</span>
+            </div>
+            <div class="chat-bubble bot" data-chat-delay="3">
+              <p>También puedo generar una cotización formal con todos los productos que necesites. Solo dime 📋</p>
+              <span class="chat-time">Ahora</span>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <input type="text" placeholder="Escribe un mensaje..." disabled />
+            <button class="chat-send-btn" aria-label="Enviar mensaje" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .chat-section {
+    background: var(--bg-primary);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chat-glow {
+    width: 600px;
+    height: 600px;
+    right: -200px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.08;
+  }
+
+  .chat-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+  }
+
+  /* Info */
+  .chat-info h2 {
+    margin-bottom: var(--space-lg);
+  }
+
+  .chat-desc {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-xl);
+  }
+
+  .chat-features {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .chat-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+  }
+
+  .check-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Chat Preview */
+  .chat-preview {
+    display: flex;
+    justify-content: center;
+  }
+
+  .chat-window {
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    box-shadow: var(--shadow-accent);
+  }
+
+  .chat-window-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    background: rgba(247, 8, 92, 0.08);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .chat-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-subtle);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+  }
+
+  .chat-header-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .chat-agent-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-primary);
+  }
+
+  .chat-status {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #28c840;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #28c840;
+  }
+
+  .chat-messages {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    min-height: 280px;
+  }
+
+  .chat-bubble {
+    max-width: 85%;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    position: relative;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .chat-bubble.bot {
+    align-self: flex-start;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--glass-border-subtle);
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-bubble.user {
+    align-self: flex-end;
+    background: var(--accent);
+    border-bottom-right-radius: 4px;
+  }
+
+  .chat-bubble p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .chat-bubble.bot p {
+    color: var(--text-secondary);
+  }
+
+  .chat-bubble.user p {
+    color: white;
+  }
+
+  .chat-time {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    display: block;
+  }
+
+  .chat-bubble.user .chat-time {
+    color: rgba(255, 255, 255, 0.6);
+    text-align: right;
+  }
+
+  .chat-bubble.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .chat-input-area {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--glass-border-subtle);
+  }
+
+  .chat-input-area input {
+    flex: 1;
+    padding: 10px 16px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.8125rem;
+  }
+
+  .chat-input-area input::placeholder {
+    color: var(--text-muted);
+  }
+
+  .chat-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 960px) {
+    .chat-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .chat-preview {
+      order: -1;
+    }
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  function initChatAnimation() {
+    const bubbles = document.querySelectorAll('#chatMessages .chat-bubble');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            bubbles.forEach((bubble, i) => {
+              gsap.to(bubble, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                delay: 0.5 + i * 0.7,
+                ease: 'back.out(1.7)',
+              });
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) observer.observe(chatMessages);
+  }
+
+  document.addEventListener('DOMContentLoaded', initChatAnimation);
+  document.addEventListener('astro:page-load', initChatAnimation);
+</script>

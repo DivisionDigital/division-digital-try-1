@@ -1,23 +1,100 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+const {
+  title = 'División Digital | Soluciones E-Commerce con IA y Chat Multiagente',
+  description = 'Creamos plataformas e-commerce potenciadas con inteligencia artificial y chat multiagente. Transforma tu negocio con tecnología de vanguardia.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/logo174.png" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/logo174.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Global CSS -->
+    <style is:global>
+      @import '../styles/global.css';
+    </style>
+  </head>
+  <body>
+    <slot />
+
+    <!-- GSAP -->
+    <script>
+      import gsap from 'gsap';
+
+      // Make gsap available globally
+      (window as any).gsap = gsap;
+
+      // Global GSAP defaults
+      gsap.defaults({
+        duration: 0.8,
+        ease: 'power3.out',
+      });
+
+      // Intersection Observer for scroll reveals
+      function initScrollReveals() {
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const el = entry.target;
+                const delay = parseFloat(el.getAttribute('data-delay') || '0');
+
+                gsap.to(el, {
+                  opacity: 1,
+                  x: 0,
+                  y: 0,
+                  scale: 1,
+                  duration: 0.9,
+                  delay: delay,
+                  ease: 'power3.out',
+                });
+
+                observer.unobserve(el);
+              }
+            });
+          },
+          {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px',
+          }
+        );
+
+        revealElements.forEach((el) => observer.observe(el));
+      }
+
+      // Run when DOM is ready
+      document.addEventListener('DOMContentLoaded', initScrollReveals);
+      // Also run on astro page transitions
+      document.addEventListener('astro:page-load', initScrollReveals);
+    </script>
+  </body>
+</html>
