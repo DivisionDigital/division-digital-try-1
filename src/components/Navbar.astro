@@ -1,5 +1,5 @@
 ---
-// Navbar.astro — Fixed glassmorphism navigation bar
+// Navbar.astro — Integrated glassmorphism navigation bar
 ---
 
 <nav id="navbar" class="navbar">
@@ -8,13 +8,16 @@
       <img src="/logo174.png" alt="División Digital" width="160" height="40" />
     </a>
 
-    <ul class="navbar-links" id="navLinks">
-      <li><a href="#hero" class="nav-link active">Inicio</a></li>
-      <li><a href="#servicios" class="nav-link">Servicios</a></li>
-      <li><a href="#portafolio" class="nav-link">Portafolio</a></li>
-      <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
-      <li><a href="#contacto" class="nav-link">Contacto</a></li>
-    </ul>
+    <!-- Desktop: Nav links inside a glass pill -->
+    <div class="navbar-center">
+      <ul class="navbar-links" id="navLinks">
+        <li><a href="#hero" class="nav-link active">Inicio</a></li>
+        <li><a href="#servicios" class="nav-link">Servicios</a></li>
+        <li><a href="#portafolio" class="nav-link">Portafolio</a></li>
+        <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+        <li><a href="#contacto" class="nav-link">Contacto</a></li>
+      </ul>
+    </div>
 
     <a href="#contacto" class="btn btn-primary btn-sm navbar-cta">Cotizar Ahora</a>
 
@@ -29,9 +32,12 @@
       <span class="hamburger-line"></span>
     </button>
   </div>
+</nav>
 
-  <!-- Mobile Menu -->
+<!-- Mobile Menu (outside nav for clean z-index stacking) -->
+<div class="mobile-overlay" id="mobileOverlay" aria-hidden="true">
   <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-glow" aria-hidden="true"></div>
     <ul class="mobile-links">
       <li><a href="#hero" class="mobile-link">Inicio</a></li>
       <li><a href="#servicios" class="mobile-link">Servicios</a></li>
@@ -40,27 +46,29 @@
       <li><a href="#contacto" class="mobile-link">Contacto</a></li>
     </ul>
     <a href="#contacto" class="btn btn-primary mobile-cta">Cotizar Ahora</a>
+    <p class="mobile-tagline">Soluciones E-Commerce con IA</p>
   </div>
-</nav>
+</div>
 
 <style>
+  /* ========== NAVBAR BAR ========== */
   .navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: var(--z-sticky);
-    background: rgba(10, 10, 15, 0.85);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-bottom: 1px solid var(--glass-border-subtle);
-    transition: all var(--transition-base);
+    background: transparent;
+    transition: background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    border-bottom: 1px solid transparent;
   }
 
   .navbar.scrolled {
-    background: rgba(10, 10, 15, 0.95);
-    border-bottom-color: var(--glass-border);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    background: rgba(10, 10, 15, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom-color: var(--glass-border-subtle);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   }
 
   .navbar-inner {
@@ -68,11 +76,18 @@
     align-items: center;
     justify-content: space-between;
     height: var(--navbar-height);
-    gap: var(--space-lg);
+    gap: var(--space-md);
+  }
+
+  /* Logo */
+  .navbar-logo {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
   }
 
   .navbar-logo img {
-    height: 36px;
+    height: 34px;
     width: auto;
     transition: opacity var(--transition-fast);
   }
@@ -81,70 +96,92 @@
     opacity: 0.85;
   }
 
+  /* Center glass pill with links */
+  .navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
   .navbar-links {
     display: flex;
     align-items: center;
-    gap: var(--space-xs);
+    gap: 2px;
+    padding: 4px 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-full);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .nav-link {
-    padding: 8px 16px;
-    font-size: 0.875rem;
+    padding: 8px 18px;
+    font-size: 0.8125rem;
     font-weight: 500;
     color: var(--text-secondary);
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    position: relative;
-  }
-
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 2px;
-    background: var(--accent);
     border-radius: var(--radius-full);
-    transition: width var(--transition-base);
+    transition: all 0.2s ease;
+    position: relative;
+    white-space: nowrap;
   }
 
-  .nav-link:hover,
+  .nav-link:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
   .nav-link.active {
     color: var(--text-primary);
+    background: rgba(247, 8, 92, 0.12);
   }
 
-  .nav-link:hover::after,
   .nav-link.active::after {
-    width: 60%;
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--accent);
+    border-radius: 50%;
   }
 
+  /* CTA */
   .navbar-cta {
-    display: flex;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
   }
 
+  /* ========== HAMBURGER ========== */
   .navbar-toggle {
     display: none;
     flex-direction: column;
     justify-content: center;
-    gap: 5px;
+    align-items: center;
+    gap: 6px;
     width: 44px;
     height: 44px;
     padding: 10px;
+    position: relative;
+    z-index: 2;
   }
 
   .hamburger-line {
-    width: 24px;
+    width: 22px;
     height: 2px;
     background: var(--text-primary);
     border-radius: var(--radius-full);
-    transition: all var(--transition-base);
+    transition: all 0.3s cubic-bezier(0.77, 0, 0.175, 1);
     transform-origin: center;
   }
 
   .navbar-toggle.active .hamburger-line:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(8px) rotate(45deg);
+    background: var(--accent-light);
   }
 
   .navbar-toggle.active .hamburger-line:nth-child(2) {
@@ -153,65 +190,121 @@
   }
 
   .navbar-toggle.active .hamburger-line:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-8px) rotate(-45deg);
+    background: var(--accent-light);
   }
 
-  /* Mobile Menu */
-  .mobile-menu {
+  /* ========== MOBILE OVERLAY ========== */
+  .mobile-overlay {
     display: none;
     position: fixed;
-    top: var(--navbar-height);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(10, 10, 15, 0.98);
-    backdrop-filter: blur(32px);
-    padding: var(--space-2xl) var(--space-lg);
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-xl);
-    opacity: 0;
-    transform: translateY(-10px);
+    inset: 0;
+    z-index: calc(var(--z-sticky) - 1);
     pointer-events: none;
-    transition: all var(--transition-base);
   }
 
-  .mobile-menu.open {
-    opacity: 1;
-    transform: translateY(0);
+  .mobile-overlay.open {
     pointer-events: all;
+  }
+
+  .mobile-menu {
+    position: absolute;
+    inset: 0;
+    background: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xl);
+    padding: calc(var(--navbar-height) + var(--space-xl)) var(--space-xl) var(--space-3xl);
+    opacity: 0;
+  }
+
+  .mobile-menu-glow {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(247, 8, 92, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(40px);
+    pointer-events: none;
   }
 
   .mobile-links {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-md);
+    gap: 0;
     width: 100%;
+    max-width: 320px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .mobile-links li {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
   }
 
   .mobile-link {
-    font-size: 1.25rem;
-    font-weight: 500;
+    display: block;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
     color: var(--text-secondary);
-    padding: var(--space-md);
-    transition: color var(--transition-fast);
-    width: 100%;
+    padding: var(--space-lg) var(--space-md);
     text-align: center;
+    transition: color 0.2s ease;
+    position: relative;
   }
 
-  .mobile-link:hover {
+  .mobile-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 1px;
+    background: var(--glass-border-subtle);
+  }
+
+  .mobile-links li:last-child .mobile-link::after {
+    display: none;
+  }
+
+  .mobile-link:hover,
+  .mobile-link:active {
     color: var(--accent-light);
   }
 
   .mobile-cta {
     width: 100%;
-    max-width: 300px;
+    max-width: 280px;
     text-align: center;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(20px);
   }
 
+  .mobile-tagline {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  /* ========== RESPONSIVE ========== */
   @media (max-width: 768px) {
-    .navbar-links,
+    .navbar-center,
     .navbar-cta {
       display: none;
     }
@@ -220,22 +313,42 @@
       display: flex;
     }
 
-    .mobile-menu {
-      display: flex;
+    .mobile-overlay {
+      display: block;
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 10, 15, 0.92);
+    }
+  }
+
+  /* For very large screens, prevent glass pill from touching edges */
+  @media (min-width: 1400px) {
+    .navbar-links {
+      gap: 4px;
+    }
+    .nav-link {
+      padding: 8px 22px;
     }
   }
 </style>
 
 <script>
+  import gsap from 'gsap';
+
   function initNavbar() {
     const navbar = document.getElementById('navbar');
     const toggle = document.getElementById('navToggle');
+    const overlay = document.getElementById('mobileOverlay');
     const mobileMenu = document.getElementById('mobileMenu');
     const mobileLinks = document.querySelectorAll('.mobile-link');
+    const mobileCta = document.querySelector('.mobile-cta');
+    const mobileTagline = document.querySelector('.mobile-tagline');
     const navLinks = document.querySelectorAll('.nav-link');
+    const mobileItems = overlay?.querySelectorAll('.mobile-links li');
+    const menuGlow = document.querySelector('.mobile-menu-glow');
 
     // Scroll effect
-    let lastScroll = 0;
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
       if (scrollY > 50) {
@@ -243,26 +356,111 @@
       } else {
         navbar?.classList.remove('scrolled');
       }
-      lastScroll = scrollY;
     });
 
-    // Mobile toggle
+    // GSAP-powered mobile menu
+    function openMobileMenu() {
+      if (!overlay || !mobileMenu) return;
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      // Fade in the fullscreen panel
+      gsap.fromTo(mobileMenu,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: 'power2.out' }
+      );
+
+      // Glow pulse
+      if (menuGlow) {
+        gsap.fromTo(menuGlow,
+          { scale: 0.5, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.6, ease: 'power2.out', delay: 0.1 }
+        );
+      }
+
+      // Stagger links from bottom
+      if (mobileItems && mobileItems.length) {
+        gsap.fromTo(mobileItems,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.07,
+            ease: 'power3.out',
+            delay: 0.15,
+          }
+        );
+      }
+
+      // CTA button
+      if (mobileCta) {
+        gsap.fromTo(mobileCta,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', delay: 0.5 }
+        );
+      }
+
+      // Tagline
+      if (mobileTagline) {
+        gsap.fromTo(mobileTagline,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.5, ease: 'power2.out', delay: 0.6 }
+        );
+      }
+    }
+
+    function closeMobileMenu() {
+      if (!overlay || !mobileMenu) return;
+      document.body.style.overflow = '';
+
+      gsap.to(mobileMenu, {
+        opacity: 0,
+        duration: 0.25,
+        ease: 'power2.in',
+        onComplete: () => {
+          overlay.classList.remove('open');
+          overlay.setAttribute('aria-hidden', 'true');
+          // Reset inline styles so re-open works
+          if (mobileItems) {
+            gsap.set(mobileItems, { clearProps: 'all' });
+          }
+          if (mobileCta) gsap.set(mobileCta, { clearProps: 'all' });
+          if (mobileTagline) gsap.set(mobileTagline, { clearProps: 'all' });
+          if (menuGlow) gsap.set(menuGlow, { clearProps: 'all' });
+          gsap.set(mobileMenu, { clearProps: 'all' });
+        },
+      });
+    }
+
+    // Toggle handler
     toggle?.addEventListener('click', () => {
-      const isOpen = mobileMenu?.classList.contains('open');
+      const isOpen = overlay?.classList.contains('open');
       toggle.classList.toggle('active');
       toggle.setAttribute('aria-expanded', String(!isOpen));
-      mobileMenu?.classList.toggle('open');
-      document.body.style.overflow = isOpen ? '' : 'hidden';
+
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
     });
 
-    // Close mobile on link click
+    // Close on link click
     mobileLinks.forEach((link) => {
       link.addEventListener('click', () => {
         toggle?.classList.remove('active');
         toggle?.setAttribute('aria-expanded', 'false');
-        mobileMenu?.classList.remove('open');
-        document.body.style.overflow = '';
+        closeMobileMenu();
       });
+    });
+
+    // Close on CTA click
+    mobileCta?.addEventListener('click', () => {
+      toggle?.classList.remove('active');
+      toggle?.setAttribute('aria-expanded', 'false');
+      closeMobileMenu();
     });
 
     // Active section tracking
