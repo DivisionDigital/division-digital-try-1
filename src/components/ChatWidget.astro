@@ -2,6 +2,9 @@
 // ChatWidget.astro — Floating chat widget (UI only, no backend)
 ---
 
+<!-- Overlay backdrop for mobile fullscreen -->
+<div class="chat-overlay" id="chatOverlay"></div>
+
 <div class="chat-widget" id="chatWidget">
   <!-- Toggle Button -->
   <button
@@ -10,8 +13,8 @@
     aria-label="Abrir chat"
     aria-expanded="false"
   >
-    <svg class="chat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <svg class="chat-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg class="close-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
 
   <!-- Chat Panel -->
@@ -29,6 +32,10 @@
           </span>
         </div>
       </div>
+      <!-- Close button inside header (visible on mobile fullscreen) -->
+      <button class="widget-header-close" id="widgetHeaderClose" aria-label="Cerrar chat">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
 
     <div class="widget-messages" id="widgetMessages">
@@ -56,6 +63,25 @@
 </div>
 
 <style>
+  /* Overlay — only visible on mobile when chat is open */
+  .chat-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: calc(var(--z-modal) - 1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    display: none;
+  }
+
+  .chat-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
   .chat-widget {
     position: fixed;
     bottom: 24px;
@@ -146,12 +172,36 @@
     padding: var(--space-md) var(--space-lg);
     background: rgba(247, 8, 92, 0.08);
     border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .widget-header-info {
     display: flex;
     align-items: center;
     gap: var(--space-md);
+  }
+
+  /* Close button inside header — hidden on desktop, shown on mobile */
+  .widget-header-close {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--glass-border-subtle);
+    color: var(--text-secondary);
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+  }
+
+  .widget-header-close:hover {
+    background: rgba(247, 8, 92, 0.15);
+    color: var(--accent);
+    border-color: var(--accent);
   }
 
   .widget-avatar {
@@ -275,6 +325,7 @@
     border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-size: 0.8125rem;
+    min-width: 0;
   }
 
   .widget-input-area input::placeholder {
@@ -302,35 +353,79 @@
     background: var(--accent-light);
   }
 
+  /* ========================================
+     MOBILE: Fullscreen chat panel
+     ======================================== */
   @media (max-width: 768px) {
+    .chat-overlay {
+      display: block;
+    }
+
     .chat-widget {
       bottom: 16px;
       right: 16px;
     }
 
+    /* Smaller toggle on mobile */
     .chat-widget-toggle {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
     }
 
     .chat-widget-toggle svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
 
     .chat-widget-toggle::before {
       inset: -3px;
     }
 
+    /* Fullscreen chat panel on mobile */
     .chat-widget-panel {
-      width: calc(100vw - 32px);
-      max-height: 65vh;
-      border-radius: var(--radius-lg);
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      height: 100%;
+      border-radius: 0;
+      border: none;
+      transform: translateY(100%);
+      opacity: 1;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .chat-widget-panel.open {
+      transform: translateY(0);
+    }
+
+    /* Show close button in header on mobile */
+    .widget-header-close {
+      display: flex;
+    }
+
+    .widget-header {
+      padding: var(--space-md) var(--space-lg);
+      /* Safe area for notch/status bar */
+      padding-top: max(var(--space-md), env(safe-area-inset-top, 12px));
     }
 
     .widget-messages {
-      min-height: 160px;
-      max-height: 220px;
+      min-height: 0;
+      max-height: none;
+      flex: 1;
+      padding: var(--space-md);
+    }
+
+    .widget-input-area {
+      /* Safe area for home indicator */
+      padding-bottom: max(var(--space-md), env(safe-area-inset-bottom, 12px));
+    }
+
+    .quick-btn {
+      padding: 8px 14px;
+      font-size: 0.75rem;
     }
   }
 
@@ -341,12 +436,13 @@
     }
 
     .chat-widget-toggle {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
     }
 
-    .chat-widget-panel {
-      width: calc(100vw - 24px);
+    .chat-widget-toggle svg {
+      width: 16px;
+      height: 16px;
     }
   }
 </style>
@@ -357,20 +453,58 @@
   function initChatWidget() {
     const toggle = document.getElementById('chatWidgetToggle');
     const panel = document.getElementById('chatWidgetPanel');
+    const overlay = document.getElementById('chatOverlay');
+    const headerClose = document.getElementById('widgetHeaderClose');
     const input = document.getElementById('widgetInput') as HTMLInputElement;
     const sendBtn = document.getElementById('widgetSend');
     const messages = document.getElementById('widgetMessages');
     const quickBtns = document.querySelectorAll('.quick-btn');
 
-    // Toggle panel
+    const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+    function openChat() {
+      toggle?.classList.add('active');
+      toggle?.setAttribute('aria-expanded', 'true');
+      panel?.classList.add('open');
+
+      if (isMobile()) {
+        overlay?.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+      }
+
+      if (input) {
+        setTimeout(() => input.focus(), 350);
+      }
+    }
+
+    function closeChat() {
+      toggle?.classList.remove('active');
+      toggle?.setAttribute('aria-expanded', 'false');
+      panel?.classList.remove('open');
+      overlay?.classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+
+    // Toggle panel via FAB
     toggle?.addEventListener('click', () => {
       const isOpen = panel?.classList.contains('open');
-      toggle.classList.toggle('active');
-      toggle.setAttribute('aria-expanded', String(!isOpen));
-      panel?.classList.toggle('open');
+      if (isOpen) {
+        closeChat();
+      } else {
+        openChat();
+      }
+    });
 
-      if (!isOpen && input) {
-        setTimeout(() => input.focus(), 300);
+    // Close via header X button (mobile)
+    headerClose?.addEventListener('click', closeChat);
+
+    // Close via overlay tap (mobile)
+    overlay?.addEventListener('click', closeChat);
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && panel?.classList.contains('open')) {
+        closeChat();
       }
     });
 
