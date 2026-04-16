@@ -1,150 +1,395 @@
 ---
-// Services.astro — Service offerings grid with glassmorphism cards
-const services = [
-  {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
-    title: 'E-Commerce Personalizado',
-    description: 'Diseñamos y desarrollamos tiendas online a medida, adaptadas a tu industria. Desde catálogos de miles de productos hasta sistemas de cotización inteligente.',
-  },
-  {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>`,
-    title: 'Chat Multiagente con IA',
-    description: 'Integración de chatbots inteligentes que atienden a tus clientes 24/7. Múltiples agentes especializados que responden, cotizan y gestionan pedidos automáticamente.',
-  },
-  {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M6 8h.01"/><path d="M10 8h4"/><path d="M6 12h.01"/><path d="M10 12h4"/></svg>`,
-    title: 'Catálogo Inteligente',
-    description: 'Sistemas de gestión de productos con búsqueda avanzada, filtros dinámicos y categorización automática. Maneja miles de SKUs sin complicaciones.',
-  },
-  {
-    icon: `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/><path d="M14.05 2a9 9 0 0 1 8 7.94"/><path d="M14.05 6A5 5 0 0 1 18 10"/></svg>`,
-    title: 'Integración WhatsApp',
-    description: 'Conecta tu tienda directamente con WhatsApp Business. Consultas de productos, cotizaciones y seguimiento de pedidos desde la app que todos usan.',
-  },
+// Services.astro — Grid Animado GSAP Flip (Expansión On-Scroll)
+// Estado Inicial: 20 cajas pequeñas (1x1). 
+// Estado Final: Cajas expansivas cobran vida y tamaño al entrar al viewport,
+// desplazando a las "pequeñas" hacia abajo. Si las pequeñas rebasan la cuadrícula de 4x5, desaparecen.
+
+const gridData = [
+  // 8 Cajas que se pueden expandir y alternar tamaños (Ahora todas son de 2x2 para ser formas muy cuadradas)
+  { word: "Mega E-Commerce", phrase: "Tiendas online a medida y escalables.", cols: 2, rows: 2, expands: true },
+  { word: "Chatbots IA", phrase: "Agentes inteligentes cerrando ventas 24/7.", cols: 2, rows: 2, expands: true },
+  { word: "Catálogo Plus", phrase: "Filtros y miles de SKUs automatizados.", cols: 2, rows: 2, expands: true },
+  { word: "WhatsApp Bot", phrase: "Cotizaciones automáticas en el chat.", cols: 2, rows: 2, expands: true },
+  { word: "Analítica VIP", phrase: "Dashboard real-time con estadísticas.", cols: 2, rows: 2, expands: true },
+  { word: "Diseño UX/UI", phrase: "Interfaces modernas de alta retención.", cols: 2, rows: 2, expands: true },
+  { word: "Escalabilidad", phrase: "Infraestructura elástica para crecer.", cols: 2, rows: 2, expands: true },
+  { word: "Seguridad TLS", phrase: "Cifrado militar en transacciones.", cols: 2, rows: 2, expands: true },
+
+  // Cajas "Mortero" que sirven de relleno y fluyen dinámicamente
+  { word: "Velocidad", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Cloud API", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Arquitectura", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Inventarios", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Tráfico B2B", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Ventas B2C", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Datos Core", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Soporte Pro", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Cifrado E2E", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Global CDN", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Optimización", phrase: "", cols: 1, rows: 1, expands: false },
+  { word: "Métricas", phrase: "", cols: 1, rows: 1, expands: false }
 ];
+
+// Hay 20 cajas exactamente. 
+// Las sorteamos al azar para que el orden de configuración de origen varíe.
+const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
 ---
 
 <section id="servicios" class="section services-section">
-  <!-- Background decoration -->
+  <!-- Glowing effects -->
   <div class="services-glow glow-orb glow-orb-accent" aria-hidden="true"></div>
 
-  <div class="container">
-    <div class="section-header">
+  <div class="container-fluid" style="padding: 0 4%;">
+    <div class="section-header" style="max-width: 800px; margin: 0 auto 3rem auto; text-align: center;">
       <span class="section-label reveal">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Nuestros Servicios
+        Galería de Servicios
       </span>
-      <h2 class="reveal" data-delay="0.1">Soluciones <span class="text-gradient">E-Commerce</span> Completas</h2>
+      <h2 class="reveal" data-delay="0.1">Ecosistema <span class="text-gradient">Fluido</span></h2>
       <p class="reveal" data-delay="0.2">
-        Construimos plataformas de venta digital de principio a fin, con tecnología de punta y atención inteligente.
+        Las soluciones robustas desplazan a lo simple. Un sistema diseñado para priorizar lo que realmente importa en tu negocio al instante.
       </p>
     </div>
 
-    <div class="services-grid">
-      {services.map((service, i) => (
-        <div class="service-card card reveal" data-delay={String(0.1 + i * 0.12)}>
-          <div class="service-icon" set:html={service.icon} />
-          <h3>{service.title}</h3>
-          <p>{service.description}</p>
-          <div class="service-line"></div>
-        </div>
-      ))}
+    <!-- 
+      Grid Limitado: 4 Filas Exactas (4 * 150 + 3 gaps = 648px)
+      Las cajas que son desbordadas de aquí caerán en el "overflow: hidden" suavemente por la animación.
+    -->
+    <div class="bento-wrapper overflow-lock reveal" data-delay="0.3">
+      <div class="dense-bento-grid">
+        {
+          bentoItems.map((item) => (
+            <!-- INICIALMENTE TODO ES CHICO (col-span-1 row-span-1) PARA CABER.
+                 Mantenemos data-target listos para ser leídos por Flip. -->
+            <div
+              class="bento-cell col-span-1 row-span-1 is-compact"
+              data-target-col={item.cols}
+              data-target-row={item.rows}
+            >
+              <!-- Fondo (Futura Imagen de 100%) -->
+              <div class="bento-bg-image">
+                <div class="bg-placeholder-pattern"></div>
+              </div>
+
+              <!-- Degradado oscuro -->
+              <div class="bento-overlay"></div>
+
+              <!-- Contenidos: Se revelará la 'phrase' solo si el CSS detecta que creció -->
+              <div class="bento-content">
+                <h3 class="bento-word">{item.word}</h3>
+                <p class="bento-phrase">{item.phrase}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { Flip } from "gsap/Flip";
+
+  gsap.registerPlugin(ScrollTrigger, Flip);
+
+  function initBentoAnimation() {
+    const grid = document.querySelector(".dense-bento-grid");
+    const wrapper = document.querySelector(".bento-wrapper");
+    const cellsArray = Array.from(grid?.querySelectorAll(".bento-cell") || []);
+
+    if (!grid || !wrapper || cellsArray.length === 0) return;
+
+    // Detectar qué módulos son expansibles leyendo si su target es mayor a 1
+    const expandableCells = cellsArray.filter((cell) => {
+      const col = parseInt(cell.getAttribute("data-target-col") || "1");
+      const row = parseInt(cell.getAttribute("data-target-row") || "1");
+      return col > 1 || row > 1;
+    });
+
+    // GSAP MatchMedia: Accesibilidad, Responsive y Limpieza de Memoria
+    let mm = gsap.matchMedia();
+
+    mm.add("(min-width: 900px)", () => {
+      // Accesibilidad: checamos nativamente el movimiento reducido para evitar errores de tipado de GSAP
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) return;
+
+      let currentIndex = 0;
+      let timer: ReturnType<typeof gsap.delayedCall> | null = null;
+      let activeFlipTween: any = null; // Guardamos el tween para el cleanup
+      
+      // Bucle Mágico de GSAP Flip (Expansión única y lenta por ciclo)
+      function animateGridStep() {
+        const state = Flip.getState(cellsArray);
+
+        // Regresamos TODAS al estado base (fusión en reverso)
+        expandableCells.forEach((cell) => {
+          cell.classList.remove("col-span-2", "row-span-2");
+          cell.classList.add("col-span-1", "row-span-1", "is-compact");
+        });
+
+        const gridContainer = document.querySelector(".dense-bento-grid");
+
+        // Mantenemos 4 celdas expandidas a la vez. 
+        const numExpanded = 4;
+        const currentActiveBoxes = [];
+        
+        for (let i = 0; i < numExpanded; i++) {
+          const cellToExpand = expandableCells[(currentIndex + i) % expandableCells.length];
+          const tCol = cellToExpand.getAttribute("data-target-col");
+          const tRow = cellToExpand.getAttribute("data-target-row");
+          cellToExpand.classList.remove("col-span-1", "row-span-1", "is-compact");
+          cellToExpand.classList.add(`col-span-${tCol}`, `row-span-${tRow}`);
+          currentActiveBoxes.push(cellToExpand);
+        }
+
+        // TRUCO DE GRID:
+        // Movemos físicamente las cajas expandidas al principio del DOM contenedor.
+        // Esto fuerza al CSS Grid a ubicarlas en la parte superior (filas 1 a la 3).
+        // Evita que cajas gigantes sean arrojadas a la fila 4 y se corten a la mitad con el overflow.
+        if (gridContainer) {
+          currentActiveBoxes.reverse().forEach(box => gridContainer.prepend(box));
+        }
+
+        // Animación de fusión súper suave
+        activeFlipTween = Flip.from(state, {
+          duration: 2.2,            // Más tiempo = más elegante
+          ease: "power2.inOut",     // Desaceleración en los bordes
+          absolute: true,           
+          onComplete: () => {
+            currentIndex++;
+            // Espera 3.5 segundos contemplando la caja grande antes del sigiendo cambio
+            timer = gsap.delayedCall(3.5, animateGridStep);
+          }
+        });
+      }
+
+      ScrollTrigger.create({
+        trigger: wrapper,
+        start: "top 80%",
+        once: true,
+        onEnter: () => {
+          animateGridStep();
+        }
+      });
+
+      // Cleanup vital: Astro SPAs o resizes de pantalla deben limpiar memoria (GSAP Core Standard)
+      return () => {
+        if (timer) timer.kill();
+        if (activeFlipTween) activeFlipTween.kill();
+        // Restaurar estado DOM a compacto
+        expandableCells.forEach((cell) => {
+          cell.classList.remove("col-span-2", "row-span-2");
+          cell.classList.add("col-span-1", "row-span-1", "is-compact");
+        });
+      };
+    });
+
+    // MÓVIL (Rendimiento optimizado y simple)
+    mm.add("(max-width: 899px)", () => {
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) return;
+
+      let idxMob = 0;
+      let tmrMob: ReturnType<typeof gsap.delayedCall> | null = null;
+      let flipMob: any = null;
+
+      function mobStep() {
+        const state = Flip.getState(expandableCells);
+
+        expandableCells.forEach((c) => {
+          c.classList.remove("col-span-2", "row-span-2");
+          c.classList.add("col-span-1", "row-span-1", "is-compact");
+        });
+
+        // Simplicidad interactiva adaptable a resolución
+        const activeCell = expandableCells[idxMob % expandableCells.length];
+        activeCell.classList.remove("col-span-1", "row-span-1", "is-compact");
+        
+        // Si estamos en un celular estricto (< 500) nos estiramos hacia ABAJO (Acordeón)
+        // Si estamos tipo tablet (500-899) nos estiramos hacia LOS LADOS (Horizontal)
+        if (window.innerWidth < 500) {
+          activeCell.classList.add("col-span-1", "row-span-2");
+        } else {
+          activeCell.classList.add("col-span-2", "row-span-1");
+        }
+
+        flipMob = Flip.from(state, {
+          duration: 1.2,
+          ease: "power2.inOut",
+          absolute: true,
+          nested: true,
+          onComplete: () => {
+            idxMob++;
+            tmrMob = gsap.delayedCall(3, mobStep);
+          }
+        });
+      }
+
+      tmrMob = gsap.delayedCall(1, mobStep);
+
+      return () => {
+        if (tmrMob) tmrMob.kill();
+        if (flipMob) flipMob.kill();
+        expandableCells.forEach((c) => {
+          c.classList.remove("col-span-2", "row-span-2");
+          c.classList.add("col-span-1", "row-span-1", "is-compact");
+        });
+      };
+    });
+  }
+
+  initBentoAnimation();
+  document.addEventListener('astro:page-load', initBentoAnimation);
+</script>
 
 <style>
   .services-section {
     position: relative;
     background: var(--bg-secondary);
+    padding: var(--space-xl) 0;
   }
 
   .services-glow {
-    width: 500px;
-    height: 500px;
-    top: 50%;
-    left: 50%;
+    width: 700px; height: 700px;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    opacity: 0.06;
+    opacity: 0.1;
+    pointer-events: none;
   }
 
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-lg);
+  /* 
+    ENVOLTORIO ESTRICTO (El pozo desbordante)
+    Debe tener ALTURA FIJA para que el Flip (absolute:true) no colapse el grid
+    a 0 pixeles y los elementos "desaparezcan y aparezcan de la nada".
+    (4 * 240px) + (3 gaps * 16px) = 1008px
+  */
+  .bento-wrapper {
     position: relative;
-    z-index: 1;
+    width: 100%;
+    height: 1008px; /* ALTURA FIJA ESTRICTA */
+    overflow: hidden; 
+    border-radius: var(--radius-xl);
   }
 
-  .service-card {
+  .dense-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 240px; /* Incrementado para forzar que las cajas 1x1 sean cuadradas */
+    grid-auto-flow: dense;
+    gap: 16px;
+    width: 100%;
+    height: 100%; /* Fuerza a heredar la altura para no colapsar nunca */
+    position: relative;
+  }
+
+  /* Span Classes Reales para CSS Grid */
+  .col-span-1 { grid-column: span 1; }
+  .col-span-2 { grid-column: span 2; }
+  .row-span-1 { grid-row: span 1; }
+  .row-span-2 { grid-row: span 2; }
+
+  /* Molde de la caja */
+  .bento-cell {
     position: relative;
     overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: rgba(15, 15, 20, 0.4);
+    border: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
-    gap: var(--space-md);
+    justify-content: flex-end;
+    padding: var(--space-lg);
   }
 
-  .service-card::before {
-    content: '';
+  /* Contenedores de color e imagen al 100% */
+  .bento-bg-image {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at top left, var(--accent-subtle), transparent 60%);
-    opacity: 0;
-    transition: opacity var(--transition-base);
-  }
-
-  .service-card:hover::before {
-    opacity: 1;
-  }
-
-  .service-icon {
+    inset: 0;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 56px;
-    height: 56px;
-    border-radius: var(--radius-md);
-    background: var(--accent-subtle);
-    border: 1px solid var(--glass-border);
-    color: var(--accent);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
+  }
+  .bg-placeholder-pattern {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(247, 8, 92, 0.02), rgba(247, 8, 92, 0.02) 10px, transparent 10px, transparent 20px);
+  }
+  .bento-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(10, 10, 15, 0.95) 0%, rgba(10, 10, 15, 0.2) 60%, transparent 100%);
+    pointer-events: none;
   }
 
-  .service-card h3 {
+  /* Para que un <img> opcional que añadas fluya perfectamente adentro */
+  .bento-bg-image :global(img) {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  /* Espacio de la tipografía */
+  .bento-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bento-word {
+    font-size: 1.15rem;
+    font-weight: 800;
     color: var(--text-primary);
-    position: relative;
-    z-index: 1;
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    /* Suave transición en caso de que mute de caja chicha a caja enorme */
+    transition: font-size 0.8s ease, color 0.8s ease;
   }
 
-  .service-card p {
-    font-size: 0.9375rem;
-    line-height: 1.7;
-    position: relative;
-    z-index: 1;
+  .bento-phrase {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin: 0;
+    display: none; 
+    opacity: 0;
   }
 
-  .service-line {
-    height: 2px;
-    width: 40px;
-    background: var(--gradient-accent);
-    border-radius: var(--radius-full);
-    transition: width var(--transition-base);
-    position: relative;
-    z-index: 1;
+  /* Lógica de Visibilidad de Textos tras el Desplazamiento Flip */
+  /* Si la caja YA NO es compacta desvanecemos suavemente la frase descriptiva */
+  .bento-cell:not(.is-compact).col-span-2 .bento-phrase, 
+  .bento-cell:not(.is-compact).row-span-2 .bento-phrase {
+    display: block;
+    animation: fadeMio 0.8s ease forwards 0.5s; /* Un ligero delay para no verse mientras se mueve */
   }
+  
+  @keyframes fadeMio { to { opacity: 0.85; } }
 
-  .service-card:hover .service-line {
-    width: 80px;
-  }
-
-  @media (max-width: 768px) {
-    .services-grid {
-      grid-template-columns: 1fr;
+  /* Responsive Adjustments */
+  @media (max-width: 900px) {
+    /* Optimización Móvil: Solo cargan los 8 cuadros principales. Ocultamos la pedacería y relleno para alivio de RAM/CPU */
+    .bento-cell[data-target-col="1"] {
+      display: none !important;
     }
+    
+    /* Configuración ajustada al nuevo peso pesado */
+    .bento-wrapper { height: 900px; } 
+    .dense-bento-grid { 
+      grid-template-columns: repeat(2, 1fr); 
+      grid-auto-rows: 180px; /* Algo menos alto en celular para que quepan y se luzcan 2 y la que se une */
+      gap: 12px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .dense-bento-grid { grid-template-columns: 1fr; }
+    .col-span-1, .col-span-2 { grid-column: span 1 !important; }
+    /* El acordeón funciona verticalmente de forma natural gracias a row-span-2 libre */
   }
 </style>
