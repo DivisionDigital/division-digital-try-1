@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "division-digital",
+  "name": "division-digital-try-1",
   "compatibility_date": "2026-04-17",
   "assets": {
     "directory": "./dist"
