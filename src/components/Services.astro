@@ -6,28 +6,28 @@
 
 const gridData = [
   // 8 Cajas que se pueden expandir y alternar tamaños (Ahora todas son de 2x2 para ser formas muy cuadradas)
-  { word: "Mega E-Commerce", phrase: "Tiendas online a medida y escalables.", cols: 2, rows: 2, expands: true },
-  { word: "Chatbots IA", phrase: "Agentes inteligentes cerrando ventas 24/7.", cols: 2, rows: 2, expands: true },
-  { word: "Catálogo Plus", phrase: "Filtros y miles de SKUs automatizados.", cols: 2, rows: 2, expands: true },
-  { word: "WhatsApp Bot", phrase: "Cotizaciones automáticas en el chat.", cols: 2, rows: 2, expands: true },
-  { word: "Analítica VIP", phrase: "Dashboard real-time con estadísticas.", cols: 2, rows: 2, expands: true },
-  { word: "Diseño UX/UI", phrase: "Interfaces modernas de alta retención.", cols: 2, rows: 2, expands: true },
-  { word: "Escalabilidad", phrase: "Infraestructura elástica para crecer.", cols: 2, rows: 2, expands: true },
-  { word: "Seguridad TLS", phrase: "Cifrado militar en transacciones.", cols: 2, rows: 2, expands: true },
+  { word: "Mega E-Commerce", phrase: "Tiendas online a medida y escalables.", cols: 2, rows: 2, expands: true, image: "/Servicios/mega-ecommerce.png" },
+  { word: "Chatbots IA", phrase: "Agentes inteligentes cerrando ventas 24/7.", cols: 2, rows: 2, expands: true, image: "/Servicios/chatbots-ia.png" },
+  { word: "Catálogo Plus", phrase: "Filtros y miles de SKUs automatizados.", cols: 2, rows: 2, expands: true, image: "/Servicios/catalogo-plus.png" },
+  { word: "WhatsApp Bot", phrase: "Cotizaciones automáticas en el chat.", cols: 2, rows: 2, expands: true, image: "/Servicios/whatsapp-bot.png" },
+  { word: "Analítica VIP", phrase: "Dashboard real-time con estadísticas.", cols: 2, rows: 2, expands: true, image: "/Servicios/analitica-vip.png" },
+  { word: "Diseño UX/UI", phrase: "Interfaces modernas de alta retención.", cols: 2, rows: 2, expands: true, image: "/Servicios/diseno-ux-ui.png" },
+  { word: "Escalabilidad", phrase: "Infraestructura elástica para crecer.", cols: 2, rows: 2, expands: true, image: "/Servicios/escalabilidad.png" },
+  { word: "Seguridad TLS", phrase: "Cifrado militar en transacciones.", cols: 2, rows: 2, expands: true, image: "/Servicios/seguridad-tls.png" },
 
   // Cajas "Mortero" que sirven de relleno y fluyen dinámicamente
-  { word: "Velocidad", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Cloud API", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Arquitectura", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Inventarios", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Tráfico B2B", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Ventas B2C", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Datos Core", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Soporte Pro", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Cifrado E2E", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Global CDN", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Optimización", phrase: "", cols: 1, rows: 1, expands: false },
-  { word: "Métricas", phrase: "", cols: 1, rows: 1, expands: false }
+  { word: "Velocidad", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/velocidad.png" },
+  { word: "Cloud API", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/cloud-api.png" },
+  { word: "Arquitectura", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/arquitectura.png" },
+  { word: "Inventarios", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/inventarios.png" },
+  { word: "Tráfico B2B", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/trafico-b2b.png" },
+  { word: "Ventas B2C", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/ventas-b2c.png" },
+  { word: "Datos Core", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/datos-core.png" },
+  { word: "Soporte Pro", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/soporte-pro.png" },
+  { word: "Cifrado E2E", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/cifrado-e2e.png" },
+  { word: "Global CDN", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/global-cdn.png" },
+  { word: "Optimización", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/optimizacion.png" },
+  { word: "Métricas", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/metricas.png" }
 ];
 
 // Hay 20 cajas exactamente. 
@@ -66,9 +66,13 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
               data-target-col={item.cols}
               data-target-row={item.rows}
             >
-              <!-- Fondo (Futura Imagen de 100%) -->
+              <!-- Fondo (Imagen 100% si existe) -->
               <div class="bento-bg-image">
-                <div class="bg-placeholder-pattern"></div>
+                {item.image ? (
+                  <img src={item.image} alt={item.word} loading="lazy" />
+                ) : (
+                  <div class="bg-placeholder-pattern"></div>
+                )}
               </div>
 
               <!-- Degradado oscuro -->
@@ -269,6 +273,8 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
   .bento-wrapper {
     position: relative;
     width: 100%;
+    max-width: 1264px; /* Limita el ancho y hace que las cajas 1x1 sean de ~240x240px */
+    margin: 0 auto; /* Centra la cuadrícula */
     height: 1008px; /* ALTURA FIJA ESTRICTA */
     overflow: hidden; 
     border-radius: var(--radius-xl);
@@ -379,7 +385,11 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
     }
     
     /* Configuración ajustada al nuevo peso pesado */
-    .bento-wrapper { height: 900px; } 
+    .bento-wrapper { 
+      width: 90%; /* Deja espacio vacío a los lados */
+      max-width: 680px; /* Evita que crezca demasiado en tablets */
+      height: 900px; 
+    } 
     .dense-bento-grid { 
       grid-template-columns: repeat(2, 1fr); 
       grid-auto-rows: 180px; /* Algo menos alto en celular para que quepan y se luzcan 2 y la que se une */
@@ -388,6 +398,10 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
   }
 
   @media (max-width: 500px) {
+    .bento-wrapper {
+      width: 88%; /* Mantiene aire alrededor en celulares */
+      max-width: 380px;
+    }
     .dense-bento-grid { grid-template-columns: 1fr; }
     .col-span-1, .col-span-2 { grid-column: span 1 !important; }
     /* El acordeón funciona verticalmente de forma natural gracias a row-span-2 libre */
