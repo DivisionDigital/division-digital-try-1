@@ -45,6 +45,7 @@ const steps = [
       {steps.map((step, i) => (
         <div class="process-step reveal" data-delay={String(0.15 + i * 0.15)}>
           <div class="step-connector" aria-hidden="true">
+            <div class="step-line-track"></div>
             <div class="step-line"></div>
           </div>
           <div class="step-number-wrap">
@@ -80,6 +81,13 @@ const steps = [
     text-align: center;
     position: relative;
     padding-top: var(--space-xl);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .process-step.is-active,
+  .process-step:hover {
+    transform: scale(1.05);
+    z-index: 2;
   }
 
   .step-connector {
@@ -87,7 +95,7 @@ const steps = [
     top: 52px;
     left: 55%;
     right: -45%;
-    height: 2px;
+    height: 4px;
     z-index: 0;
   }
 
@@ -95,12 +103,29 @@ const steps = [
     display: none;
   }
 
-  .step-line {
+  .step-line-track {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--glass-border-subtle));
+    background: var(--glass-border-subtle);
     border-radius: var(--radius-full);
-    opacity: 0.4;
+    opacity: 0.5;
+  }
+
+  .step-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-glow));
+    border-radius: var(--radius-full);
+    transform-origin: left center;
+    transform: scaleX(0);
+    box-shadow: 0 0 10px var(--accent-glow);
+    z-index: 1;
   }
 
   .step-number-wrap {
@@ -127,24 +152,42 @@ const steps = [
     font-weight: 700;
     color: var(--accent);
     box-shadow: 0 0 20px var(--accent-glow);
-    transition: all var(--transition-base);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
+  .process-step.is-active .step-number,
   .process-step:hover .step-number {
     background: var(--accent);
     color: white;
     box-shadow: var(--shadow-accent-lg);
+    border-color: var(--accent);
   }
 
   .step-icon {
     color: var(--text-muted);
     opacity: 0.7;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .process-step.is-active .step-icon,
+  .process-step:hover .step-icon {
+    color: var(--accent);
+    opacity: 1;
+    transform: scale(1.1);
   }
 
   .step-content h3 {
     color: var(--text-primary);
     margin-bottom: var(--space-sm);
     font-size: 1.25rem;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center bottom;
+  }
+
+  .process-step.is-active .step-content h3,
+  .process-step:hover .step-content h3 {
+    transform: scale(1.15);
+    color: white;
   }
 
   .step-content p {
@@ -152,6 +195,15 @@ const steps = [
     line-height: 1.6;
     max-width: 240px;
     margin: 0 auto;
+    color: var(--text-muted);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center top;
+  }
+
+  .process-step.is-active .step-content p,
+  .process-step:hover .step-content p {
+    transform: scale(1.05);
+    color: var(--text-primary);
   }
 
   @media (max-width: 960px) {
@@ -171,3 +223,65 @@ const steps = [
     }
   }
 </style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initProcessAnimation = () => {
+    const timelineEl = document.querySelector('.process-timeline');
+    if (!timelineEl) return;
+
+    const steps = gsap.utils.toArray('.process-step') as HTMLElement[];
+    const lines = gsap.utils.toArray('.step-line') as HTMLElement[];
+
+    // Create the timeline
+    const tl = gsap.timeline({ 
+      repeat: -1,
+      paused: true
+    });
+
+    steps.forEach((step, i) => {
+      // Activar el paso actual
+      tl.add(() => step.classList.add('is-active'))
+        .to({}, { duration: 0.5 }); // Tiempo que dura encendido antes de mover la línea
+
+      if (i < steps.length - 1) {
+        // Animar la línea hacia el siguiente paso si existe
+        tl.to(lines[i], { scaleX: 1, duration: 0.8, ease: "power2.inOut" })
+          .add(() => step.classList.remove('is-active')); // Apagar mientras enciende el siguiente
+      } else {
+        // Si es el último paso, dejarlo un momento encendido
+        tl.to({}, { duration: 0.5 });
+      }
+    });
+
+    // Momento clímax: Encender TODOS los pasos
+    tl.add(() => {
+      steps.forEach(s => s.classList.add('is-active'));
+    })
+    .to({}, { duration: 1.5 }); // Mantener todo iluminado un momento
+
+    // Resetear para el loop
+    tl.add(() => {
+      steps.forEach(s => s.classList.remove('is-active'));
+    })
+    .to(lines, { scaleX: 0, duration: 0.8, ease: "power3.inOut" })
+    .to({}, { duration: 0.5 }); // Pequeña pausa antes de reiniciar el loop
+
+    // Iniciar cuando sea visible
+    ScrollTrigger.create({
+      trigger: '.process-section',
+      start: 'top 70%',
+      onEnter: () => tl.play(),
+      onLeave: () => tl.pause(),
+      onEnterBack: () => tl.play(),
+      onLeaveBack: () => tl.pause(),
+    });
+  };
+
+  initProcessAnimation();
+  document.addEventListener('astro:page-load', initProcessAnimation);
+</script>
