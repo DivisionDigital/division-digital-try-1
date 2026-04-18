@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+
 // Services.astro — Grid Animado GSAP Flip (Expansión On-Scroll)
 // Estado Inicial: 20 cajas pequeñas (1x1). 
 // Estado Final: Cajas expansivas cobran vida y tamaño al entrar al viewport,
@@ -69,7 +71,7 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
               <!-- Fondo (Imagen 100% si existe) -->
               <div class="bento-bg-image">
                 {item.image ? (
-                  <img src={item.image} alt={item.word} loading="lazy" />
+                  <Image src={item.image} alt={item.word} width={600} height={600} loading="lazy" />
                 ) : (
                   <div class="bg-placeholder-pattern"></div>
                 )}
