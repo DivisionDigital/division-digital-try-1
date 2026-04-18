@@ -105,6 +105,36 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
 
     if (!grid || !wrapper || cellsArray.length === 0) return;
 
+    // --- Efecto de Interacción: Click en la Imagen ---
+    // Se añade un evento a cada tarjeta para que al hacer click, solo se anime la imagen interna
+    cellsArray.forEach((cell) => {
+      const img = cell.querySelector('img, .bg-placeholder-pattern');
+      if (img) {
+        // Le damos estilo de botón para que el usuario sepa que es clickeable
+        (cell as HTMLElement).style.cursor = 'pointer';
+        
+        cell.addEventListener('click', () => {
+          if (gsap.isTweening(img)) return;
+
+          // Animación Premium: Efecto Táctil
+          // Se hunde rápido como un botón físico, y se recupera con mucha inercia y elegancia
+          gsap.timeline()
+            .to(img, {
+              scale: 0.95,
+              opacity: 0.5,
+              duration: 0.1,
+              ease: "power2.inOut"
+            })
+            .to(img, {
+              scale: 1,
+              opacity: 1,
+              duration: 0.8,
+              ease: "expo.out" 
+            });
+        });
+      }
+    });
+
     // Detectar qué módulos son expansibles leyendo si su target es mayor a 1
     const expandableCells = cellsArray.filter((cell) => {
       const col = parseInt(cell.getAttribute("data-target-col") || "1");
@@ -191,55 +221,48 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
       };
     });
 
-    // MÓVIL (Rendimiento optimizado y simple)
+    // MÓVIL (Efecto Stacking / Tarjetas Apilables)
     mm.add("(max-width: 899px)", () => {
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (prefersReducedMotion) return;
 
-      let idxMob = 0;
-      let tmrMob: ReturnType<typeof gsap.delayedCall> | null = null;
-      let flipMob: any = null;
+      // Desactivamos clases limitantes de tamaño inicial
+      expandableCells.forEach((c) => {
+        c.classList.remove("col-span-1", "row-span-1", "is-compact");
+        // Les damos la clase grande para que el CSS aplique los estilos de tarjeta expandida
+        c.classList.add("col-span-2", "row-span-2");
+      });
 
-      function mobStep() {
-        const state = Flip.getState(expandableCells);
+      let triggers: ScrollTrigger[] = [];
 
-        expandableCells.forEach((c) => {
-          c.classList.remove("col-span-2", "row-span-2");
-          c.classList.add("col-span-1", "row-span-1", "is-compact");
+      // Efecto Stacking: las cartas se encogen y pierden opacidad a medida que suben por debajo de la siguiente
+      expandableCells.forEach((card, index) => {
+        if (index === expandableCells.length - 1) return; // La última carta no se encoge porque nada la tapa
+
+        const st = ScrollTrigger.create({
+          trigger: card,
+          start: "top 120px", // Mismo valor que el top de position: sticky en CSS
+          endTrigger: wrapper, // Terminar efecto al final de toda la sección
+          end: "bottom top", 
+          pin: false, // Usamos position: sticky de CSS nativo para mejor performance
+          pinSpacing: false,
+          scrub: true,
+          animation: gsap.to(card, {
+            scale: 0.92 - (index * 0.01),
+            opacity: 0.3,
+            transformOrigin: "top center",
+            ease: "none"
+          })
         });
-
-        // Simplicidad interactiva adaptable a resolución
-        const activeCell = expandableCells[idxMob % expandableCells.length];
-        activeCell.classList.remove("col-span-1", "row-span-1", "is-compact");
-        
-        // Si estamos en un celular estricto (< 500) nos estiramos hacia ABAJO (Acordeón)
-        // Si estamos tipo tablet (500-899) nos estiramos hacia LOS LADOS (Horizontal)
-        if (window.innerWidth < 500) {
-          activeCell.classList.add("col-span-1", "row-span-2");
-        } else {
-          activeCell.classList.add("col-span-2", "row-span-1");
-        }
-
-        flipMob = Flip.from(state, {
-          duration: 1.2,
-          ease: "power2.inOut",
-          absolute: true,
-          nested: true,
-          onComplete: () => {
-            idxMob++;
-            tmrMob = gsap.delayedCall(3, mobStep);
-          }
-        });
-      }
-
-      tmrMob = gsap.delayedCall(1, mobStep);
+        triggers.push(st);
+      });
 
       return () => {
-        if (tmrMob) tmrMob.kill();
-        if (flipMob) flipMob.kill();
+        triggers.forEach(t => t.kill());
         expandableCells.forEach((c) => {
-          c.classList.remove("col-span-2", "row-span-2");
           c.classList.add("col-span-1", "row-span-1", "is-compact");
+          c.classList.remove("col-span-2", "row-span-2");
+          gsap.set(c, { clearProps: "all" });
         });
       };
     });
@@ -302,8 +325,20 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-lg);
-    background: rgba(15, 15, 20, 0.4);
-    border: 1px solid var(--glass-border);
+    
+    /* Fondo casi transparente y desenfoque para integrarse con la página */
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    
+    /* Relieve sutil integrado */
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.1), 
+      inset 0px 1px 1px rgba(255, 255, 255, 0.03);
+
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -328,7 +363,8 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
     position: absolute;
     inset: 0;
     z-index: 2;
-    background: linear-gradient(to top, rgba(10, 10, 15, 0.95) 0%, rgba(10, 10, 15, 0.2) 60%, transparent 100%);
+    /* Reducimos la oscuridad del overlay para que el fondo de la página respire más */
+    background: linear-gradient(to top, rgba(10, 10, 15, 0.7) 0%, rgba(10, 10, 15, 0.05) 60%, transparent 100%);
     pointer-events: none;
   }
 
@@ -379,31 +415,45 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
 
   /* Responsive Adjustments */
   @media (max-width: 900px) {
-    /* Optimización Móvil: Solo cargan los 8 cuadros principales. Ocultamos la pedacería y relleno para alivio de RAM/CPU */
+    /* Optimización Móvil: Ocultamos el relleno */
     .bento-cell[data-target-col="1"] {
       display: none !important;
     }
     
-    /* Configuración ajustada al nuevo peso pesado */
+    /* Configuración para Stacking Cards */
     .bento-wrapper { 
-      width: 90%; /* Deja espacio vacío a los lados */
-      max-width: 680px; /* Evita que crezca demasiado en tablets */
-      height: 900px; 
+      width: 92%; 
+      max-width: 500px;
+      height: auto !important; /* Permitir scroll libre */
+      overflow: visible !important; /* Requisito estricto para position: sticky */
+      padding-bottom: 4rem; /* Aire al final */
     } 
     .dense-bento-grid { 
-      grid-template-columns: repeat(2, 1fr); 
-      grid-auto-rows: 180px; /* Algo menos alto en celular para que quepan y se luzcan 2 y la que se une */
-      gap: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .bento-cell {
+      position: sticky;
+      top: 120px; /* Punto donde se atascan */
+      height: 380px; /* Altura generosa para ver el texto e imagen */
+      width: 100%;
+    }
+    
+    /* Forzar visibilidad del texto sin animaciones de delay molestas */
+    .bento-phrase {
+      display: block !important;
+      opacity: 0.85 !important;
+      animation: none !important;
     }
   }
 
   @media (max-width: 500px) {
-    .bento-wrapper {
-      width: 88%; /* Mantiene aire alrededor en celulares */
-      max-width: 380px;
+    .bento-wrapper { width: 90%; }
+    .bento-cell { 
+      height: 340px; 
+      top: 100px;
     }
-    .dense-bento-grid { grid-template-columns: 1fr; }
-    .col-span-1, .col-span-2 { grid-column: span 1 !important; }
-    /* El acordeón funciona verticalmente de forma natural gracias a row-span-2 libre */
   }
 </style>
