@@ -337,6 +337,11 @@
   import gsap from 'gsap';
 
   function initNavbar() {
+    const navWindow = window as Window & {
+      __ddNavbarCleanup?: () => void;
+    };
+    navWindow.__ddNavbarCleanup?.();
+
     const navbar = document.getElementById('navbar');
     const toggle = document.getElementById('navToggle');
     const overlay = document.getElementById('mobileOverlay');
@@ -347,16 +352,32 @@
     const navLinks = document.querySelectorAll('.nav-link');
     const mobileItems = overlay?.querySelectorAll('.mobile-links li');
     const menuGlow = document.querySelector('.mobile-menu-glow');
+    const controller = new AbortController();
+    let isScrolled = false;
+    let scrollFrame: number | null = null;
+
+    const setScrolled = (nextScrolled: boolean) => {
+      if (nextScrolled === isScrolled) return;
+      isScrolled = nextScrolled;
+      navbar?.classList.toggle('scrolled', nextScrolled);
+    };
+
+    const updateScrollState = () => {
+      scrollFrame = null;
+      setScrolled(window.scrollY > 50);
+    };
+
+    const onScroll = () => {
+      if (scrollFrame !== null) return;
+      scrollFrame = requestAnimationFrame(updateScrollState);
+    };
 
     // Scroll effect
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      if (scrollY > 50) {
-        navbar?.classList.add('scrolled');
-      } else {
-        navbar?.classList.remove('scrolled');
-      }
+    window.addEventListener('scroll', onScroll, {
+      passive: true,
+      signal: controller.signal,
     });
+    updateScrollState();
 
     // GSAP-powered mobile menu
     function openMobileMenu() {
@@ -445,7 +466,7 @@
       } else {
         openMobileMenu();
       }
-    });
+    }, { signal: controller.signal });
 
     // Close on link click
     mobileLinks.forEach((link) => {
@@ -453,7 +474,7 @@
         toggle?.classList.remove('active');
         toggle?.setAttribute('aria-expanded', 'false');
         closeMobileMenu();
-      });
+      }, { signal: controller.signal });
     });
 
     // Close on CTA click
@@ -461,7 +482,7 @@
       toggle?.classList.remove('active');
       toggle?.setAttribute('aria-expanded', 'false');
       closeMobileMenu();
-    });
+    }, { signal: controller.signal });
 
     // Active section tracking
     const sections = document.querySelectorAll('section[id]');
@@ -479,8 +500,21 @@
     }, observerOptions);
 
     sections.forEach((section) => sectionObserver.observe(section));
+
+    navWindow.__ddNavbarCleanup = () => {
+      controller.abort();
+      sectionObserver.disconnect();
+      if (scrollFrame !== null) {
+        cancelAnimationFrame(scrollFrame);
+      }
+      gsap.killTweensOf([mobileMenu, menuGlow, mobileItems, mobileCta, mobileTagline]);
+      document.body.style.overflow = '';
+    };
   }
 
   document.addEventListener('DOMContentLoaded', initNavbar);
   document.addEventListener('astro:page-load', initNavbar);
+  window.addEventListener('pagehide', () => {
+    (window as Window & { __ddNavbarCleanup?: () => void }).__ddNavbarCleanup?.();
+  });
 </script>

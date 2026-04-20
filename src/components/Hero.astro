@@ -95,6 +95,12 @@
     animation: gridMove 20s linear infinite;
   }
 
+  .hero.animations-paused .grid-lines,
+  .hero.animations-paused .pulse-dot,
+  .hero.animations-paused .scroll-line {
+    animation-play-state: paused;
+  }
+
   @keyframes gridMove {
     0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
     100% { transform: perspective(500px) rotateX(60deg) translateY(60px); }
@@ -274,12 +280,31 @@
       justify-content: center;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grid-lines,
+    .pulse-dot,
+    .scroll-line {
+      animation-play-state: paused;
+    }
+  }
 </style>
 
 <script>
   import gsap from 'gsap';
 
   function initHeroAnimations() {
+    const heroWindow = window as Window & {
+      __ddHeroCleanup?: () => void;
+    };
+    heroWindow.__ddHeroCleanup?.();
+
+    const hero = document.querySelector<HTMLElement>('.hero');
+    if (!hero) return;
+
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let isVisible = true;
+
     const tl = gsap.timeline({ delay: 0.3 });
 
     tl.from('.hero-grid', {
@@ -301,25 +326,65 @@
     }, 0.2);
 
     // Floating animation for glow orbs
-    gsap.to('.hero-glow-1', {
+    const floatingTweens = [
+      gsap.to('.hero-glow-1', {
       y: 30,
       x: -20,
       duration: 6,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
-    });
+      }),
 
-    gsap.to('.hero-glow-2', {
+      gsap.to('.hero-glow-2', {
       y: -20,
       x: 30,
       duration: 8,
       ease: 'sine.inOut',
       repeat: -1,
       yoyo: true,
-    });
+      }),
+    ];
+
+    const updateAnimationState = () => {
+      const shouldPause = !isVisible || motionQuery.matches;
+      hero.classList.toggle('animations-paused', shouldPause);
+      floatingTweens.forEach((tween) => {
+        if (shouldPause) {
+          tween.pause();
+        } else {
+          tween.resume();
+        }
+      });
+    };
+
+    const visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        isVisible = entry?.isIntersecting ?? true;
+        updateAnimationState();
+      },
+      { threshold: 0.05 }
+    );
+
+    const handleMotionChange = () => updateAnimationState();
+
+    visibilityObserver.observe(hero);
+    motionQuery.addEventListener('change', handleMotionChange);
+    updateAnimationState();
+
+    heroWindow.__ddHeroCleanup = () => {
+      visibilityObserver.disconnect();
+      motionQuery.removeEventListener('change', handleMotionChange);
+      tl.kill();
+      floatingTweens.forEach((tween) => tween.kill());
+      hero.classList.remove('animations-paused');
+    };
   }
 
   document.addEventListener('DOMContentLoaded', initHeroAnimations);
   document.addEventListener('astro:page-load', initHeroAnimations);
+  window.addEventListener('pagehide', () => {
+    (window as Window & { __ddHeroCleanup?: () => void }).__ddHeroCleanup?.();
+  });
 </script>

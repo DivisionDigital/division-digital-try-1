@@ -279,7 +279,14 @@
 
 <script>
   function initContactForm() {
+    const contactWindow = window as Window & {
+      __ddContactCleanup?: () => void;
+    };
+    contactWindow.__ddContactCleanup?.();
+
     const form = document.getElementById('contactForm') as HTMLFormElement;
+    const controller = new AbortController();
+    let resetTimer: number | undefined;
 
     form?.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -292,14 +299,22 @@
       `;
       btn.style.pointerEvents = 'none';
 
-      setTimeout(() => {
+      resetTimer = window.setTimeout(() => {
         btn.innerHTML = originalText;
         btn.style.pointerEvents = '';
         form.reset();
       }, 3000);
-    });
+    }, { signal: controller.signal });
+
+    contactWindow.__ddContactCleanup = () => {
+      controller.abort();
+      window.clearTimeout(resetTimer);
+    };
   }
 
   document.addEventListener('DOMContentLoaded', initContactForm);
   document.addEventListener('astro:page-load', initContactForm);
+  window.addEventListener('pagehide', () => {
+    (window as Window & { __ddContactCleanup?: () => void }).__ddContactCleanup?.();
+  });
 </script>

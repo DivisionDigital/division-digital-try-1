@@ -17,6 +17,11 @@
 
 <script>
   function initInteractiveBackground() {
+    const bgWindow = window as Window & {
+      __ddInteractiveBackgroundCleanup?: () => void;
+    };
+    bgWindow.__ddInteractiveBackgroundCleanup?.();
+
     const canvas = document.getElementById(
       "interactive-bg",
     ) as HTMLCanvasElement;
@@ -48,9 +53,11 @@
 
     // --- State ---
     let mouse = { x: -9999, y: -9999 };
-    let animationId: number = 0;
+    let animationId: number | null = null;
     let particles: Particle[] = [];
     let dpr = window.devicePixelRatio || 1;
+    let resizeTimer: number | undefined;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     // --- Particle class ---
     class Particle {
@@ -258,6 +265,11 @@
 
     // --- Main animation loop ---
     function animate() {
+      if (document.hidden || motionQuery.matches) {
+        animationId = null;
+        return;
+      }
+
       ctx!.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       // Cursor radial glow
@@ -273,6 +285,23 @@
       drawConnections();
 
       animationId = requestAnimationFrame(animate);
+    }
+
+    function startAnimation() {
+      if (animationId !== null || document.hidden || motionQuery.matches) return;
+      canvas.style.display = "";
+      animationId = requestAnimationFrame(animate);
+    }
+
+    function stopAnimation({ hide = false } = {}) {
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+
+      if (hide) {
+        canvas.style.display = "none";
+      }
     }
 
     // --- Event listeners ---
@@ -293,37 +322,63 @@
       mouse.y = -9999;
     }
 
+    function onResize() {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        resize();
+        createParticles();
+      }, 150);
+    }
+
+    function onVisibilityChange() {
+      if (document.hidden) {
+        stopAnimation();
+      } else {
+        startAnimation();
+      }
+    }
+
+    function onMotionChange() {
+      if (motionQuery.matches) {
+        stopAnimation({ hide: true });
+      } else {
+        canvas.style.display = "";
+        startAnimation();
+      }
+    }
+
     // --- Setup ---
     resize();
     createParticles();
-    animate();
+    startAnimation();
 
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     document.addEventListener("mouseleave", onMouseLeave);
-    window.addEventListener("resize", () => {
-      resize();
-      createParticles();
-    });
+    window.addEventListener("resize", onResize);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    motionQuery.addEventListener("change", onMotionChange);
+    onMotionChange();
 
-    // Reduced-motion preference
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (motionQuery.matches) {
-      cancelAnimationFrame(animationId);
-      canvas.style.display = "none";
-    }
-    motionQuery.addEventListener("change", (e) => {
-      if (e.matches) {
-        cancelAnimationFrame(animationId);
-        canvas.style.display = "none";
-      } else {
-        canvas.style.display = "";
-        animate();
-      }
-    });
+    bgWindow.__ddInteractiveBackgroundCleanup = () => {
+      stopAnimation();
+      window.clearTimeout(resizeTimer);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("mouseleave", onMouseLeave);
+      window.removeEventListener("resize", onResize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      motionQuery.removeEventListener("change", onMotionChange);
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    };
   }
 
   // Initialize
   document.addEventListener("DOMContentLoaded", initInteractiveBackground);
   document.addEventListener("astro:page-load", initInteractiveBackground);
+  window.addEventListener("pagehide", () => {
+    (
+      window as Window & { __ddInteractiveBackgroundCleanup?: () => void }
+    ).__ddInteractiveBackgroundCleanup?.();
+  });
 </script>

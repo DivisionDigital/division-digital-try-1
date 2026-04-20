@@ -101,11 +101,18 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
   gsap.registerPlugin(ScrollTrigger, Flip);
 
   function initBentoAnimation() {
+    const servicesWindow = window as Window & {
+      __ddServicesCleanup?: () => void;
+    };
+    servicesWindow.__ddServicesCleanup?.();
+
     const grid = document.querySelector(".dense-bento-grid");
     const wrapper = document.querySelector(".bento-wrapper");
     const cellsArray = Array.from(grid?.querySelectorAll(".bento-cell") || []);
 
     if (!grid || !wrapper || cellsArray.length === 0) return;
+
+    const clickController = new AbortController();
 
     // --- Efecto de Interacción: Click en la Imagen ---
     // Se añade un evento a cada tarjeta para que al hacer click, solo se anime la imagen interna
@@ -133,7 +140,7 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
               duration: 0.8,
               ease: "expo.out" 
             });
-        });
+        }, { signal: clickController.signal });
       }
     });
 
@@ -145,7 +152,7 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
     });
 
     // GSAP MatchMedia: Accesibilidad, Responsive y Limpieza de Memoria
-    let mm = gsap.matchMedia();
+    const mm = gsap.matchMedia();
 
     mm.add("(min-width: 900px)", () => {
       // Accesibilidad: checamos nativamente el movimiento reducido para evitar errores de tipado de GSAP
@@ -155,9 +162,29 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
       let currentIndex = 0;
       let timer: ReturnType<typeof gsap.delayedCall> | null = null;
       let activeFlipTween: any = null; // Guardamos el tween para el cleanup
+      let activeTrigger: ScrollTrigger | null = null;
+      let isActive = false;
+      let isAnimating = false;
+
+      function clearTimer() {
+        if (timer) {
+          timer.kill();
+          timer = null;
+        }
+      }
+
+      function scheduleNextStep() {
+        clearTimer();
+        if (isActive) {
+          timer = gsap.delayedCall(3.5, animateGridStep);
+        }
+      }
       
       // Bucle Mágico de GSAP Flip (Expansión única y lenta por ciclo)
       function animateGridStep() {
+        if (!isActive || isAnimating) return;
+        isAnimating = true;
+
         const state = Flip.getState(cellsArray);
 
         // Regresamos TODAS al estado base (fusión en reverso)
@@ -195,26 +222,50 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
           ease: "power2.inOut",     // Desaceleración en los bordes
           absolute: true,           
           onComplete: () => {
+            isAnimating = false;
             currentIndex++;
             // Espera 3.5 segundos contemplando la caja grande antes del sigiendo cambio
-            timer = gsap.delayedCall(3.5, animateGridStep);
+            scheduleNextStep();
           }
         });
       }
 
-      ScrollTrigger.create({
-        trigger: wrapper,
-        start: "top 80%",
-        once: true,
-        onEnter: () => {
+      function pauseGrid() {
+        isActive = false;
+        clearTimer();
+        if (activeFlipTween && activeFlipTween.progress() < 1) {
+          activeFlipTween.pause();
+        }
+      }
+
+      function resumeGrid() {
+        isActive = true;
+        if (activeFlipTween && activeFlipTween.progress() < 1) {
+          activeFlipTween.resume();
+          return;
+        }
+        if (!timer) {
           animateGridStep();
         }
+      }
+
+      activeTrigger = ScrollTrigger.create({
+        trigger: wrapper,
+        start: "top 80%",
+        end: "bottom top",
+        onEnter: resumeGrid,
+        onEnterBack: resumeGrid,
+        onLeave: pauseGrid,
+        onLeaveBack: pauseGrid,
       });
 
       // Cleanup vital: Astro SPAs o resizes de pantalla deben limpiar memoria (GSAP Core Standard)
       return () => {
-        if (timer) timer.kill();
+        isActive = false;
+        isAnimating = false;
+        clearTimer();
         if (activeFlipTween) activeFlipTween.kill();
+        activeTrigger?.kill();
         // Restaurar estado DOM a compacto
         expandableCells.forEach((cell) => {
           cell.classList.remove("col-span-2", "row-span-2");
@@ -268,10 +319,19 @@ const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
         });
       };
     });
+
+    servicesWindow.__ddServicesCleanup = () => {
+      clickController.abort();
+      mm.revert();
+      gsap.killTweensOf(cellsArray);
+    };
   }
 
   initBentoAnimation();
   document.addEventListener('astro:page-load', initBentoAnimation);
+  window.addEventListener('pagehide', () => {
+    (window as Window & { __ddServicesCleanup?: () => void }).__ddServicesCleanup?.();
+  });
 </script>
 
 <style>

@@ -62,14 +62,29 @@ const {
 
       // Intersection Observer for scroll reveals
       function initScrollReveals() {
-        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        const revealWindow = window as Window & {
+          __ddRevealCleanup?: () => void;
+        };
+
+        revealWindow.__ddRevealCleanup?.();
+
+        const revealElements = Array.from(
+          document.querySelectorAll<HTMLElement>(
+            '.reveal, .reveal-left, .reveal-right, .reveal-scale'
+          )
+        ).filter((el) => el.dataset.ddRevealed !== 'true');
+
+        if (revealElements.length === 0) return;
 
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                const el = entry.target;
+                const el = entry.target as HTMLElement;
                 const delay = parseFloat(el.getAttribute('data-delay') || '0');
+
+                el.dataset.ddRevealed = 'true';
+                delete el.dataset.ddRevealBound;
 
                 gsap.to(el, {
                   opacity: 1,
@@ -79,6 +94,7 @@ const {
                   duration: 0.9,
                   delay: delay,
                   ease: 'power3.out',
+                  overwrite: 'auto',
                 });
 
                 observer.unobserve(el);
@@ -91,13 +107,28 @@ const {
           }
         );
 
-        revealElements.forEach((el) => observer.observe(el));
+        revealElements.forEach((el) => {
+          el.dataset.ddRevealBound = 'true';
+          observer.observe(el);
+        });
+
+        revealWindow.__ddRevealCleanup = () => {
+          observer.disconnect();
+          revealElements.forEach((el) => {
+            if (el.dataset.ddRevealed !== 'true') {
+              delete el.dataset.ddRevealBound;
+            }
+          });
+        };
       }
 
       // Run when DOM is ready
       document.addEventListener('DOMContentLoaded', initScrollReveals);
       // Also run on astro page transitions
       document.addEventListener('astro:page-load', initScrollReveals);
+      window.addEventListener('pagehide', () => {
+        (window as Window & { __ddRevealCleanup?: () => void }).__ddRevealCleanup?.();
+      });
     </script>
   </body>
 </html>

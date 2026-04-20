@@ -2,7 +2,7 @@
 // Showcase.astro — Portfolio showcase with animated stats and mockup
 ---
 
-<section id="portafolio" class="section showcase-section">
+<section id="portafolio" class="section showcase-section animations-paused">
   <div class="container">
     <div class="section-header">
       <span class="section-label reveal">
@@ -360,6 +360,16 @@
   }
 
   .mockup-browser:hover .mockup-scroll-area {
+    animation-play-state: paused;
+  }
+
+  .showcase-section.animations-paused .mockup-scroll-area,
+  .showcase-section.animations-paused .click-target-1,
+  .showcase-section.animations-paused .click-target-2,
+  .showcase-section.animations-paused .click-target-3,
+  .showcase-section.animations-paused .click-target-4,
+  .showcase-section.animations-paused .click-target-5,
+  .showcase-section.animations-paused .brands-track {
     animation-play-state: paused;
   }
 
@@ -729,6 +739,66 @@
       font-size: 0.875rem;
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mockup-scroll-area,
+    .click-target-1,
+    .click-target-2,
+    .click-target-3,
+    .click-target-4,
+    .click-target-5,
+    .brands-track {
+      animation-play-state: paused;
+    }
+  }
 </style>
+
+<script>
+  function initShowcaseAnimationVisibility() {
+    const showcaseWindow = window as Window & {
+      __ddShowcaseCleanup?: () => void;
+    };
+    showcaseWindow.__ddShowcaseCleanup?.();
+
+    const section = document.querySelector<HTMLElement>(".showcase-section");
+    if (!section) return;
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let isVisible = false;
+
+    const updateAnimationState = () => {
+      section.classList.toggle(
+        "animations-paused",
+        !isVisible || motionQuery.matches,
+      );
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        isVisible = entries[0]?.isIntersecting ?? false;
+        updateAnimationState();
+      },
+      { threshold: 0.05 },
+    );
+
+    const handleMotionChange = () => updateAnimationState();
+
+    observer.observe(section);
+    motionQuery.addEventListener("change", handleMotionChange);
+    updateAnimationState();
+
+    showcaseWindow.__ddShowcaseCleanup = () => {
+      observer.disconnect();
+      motionQuery.removeEventListener("change", handleMotionChange);
+      section.classList.add("animations-paused");
+    };
+  }
+
+  document.addEventListener("DOMContentLoaded", initShowcaseAnimationVisibility);
+  document.addEventListener("astro:page-load", initShowcaseAnimationVisibility);
+  window.addEventListener("pagehide", () => {
+    (window as Window & { __ddShowcaseCleanup?: () => void }).__ddShowcaseCleanup?.();
+  });
+</script>
 
 <!-- El script de contador ha sido eliminado -->

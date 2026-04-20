@@ -335,19 +335,27 @@
   import gsap from 'gsap';
 
   function initChatAnimation() {
-    const bubbles = document.querySelectorAll('#chatMessages .chat-bubble');
+    const chatWindow = window as Window & {
+      __ddChatFeatureCleanup?: () => void;
+    };
+    chatWindow.__ddChatFeatureCleanup?.();
+
+    const bubbles = document.querySelectorAll<HTMLElement>('#chatMessages .chat-bubble');
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             bubbles.forEach((bubble, i) => {
+              if (bubble.dataset.ddChatVisible === 'true') return;
+              bubble.dataset.ddChatVisible = 'true';
               gsap.to(bubble, {
                 opacity: 1,
                 y: 0,
                 duration: 0.5,
                 delay: 0.5 + i * 0.7,
                 ease: 'back.out(1.7)',
+                overwrite: 'auto',
               });
             });
             observer.unobserve(entry.target);
@@ -359,8 +367,15 @@
 
     const chatMessages = document.getElementById('chatMessages');
     if (chatMessages) observer.observe(chatMessages);
+
+    chatWindow.__ddChatFeatureCleanup = () => {
+      observer.disconnect();
+    };
   }
 
   document.addEventListener('DOMContentLoaded', initChatAnimation);
   document.addEventListener('astro:page-load', initChatAnimation);
+  window.addEventListener('pagehide', () => {
+    (window as Window & { __ddChatFeatureCleanup?: () => void }).__ddChatFeatureCleanup?.();
+  });
 </script>
