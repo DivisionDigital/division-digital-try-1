@@ -1,5 +1,13 @@
 ---
 import { Image } from "astro:assets";
+import marca1 from "../assets/marcas/1.png";
+import marca2 from "../assets/marcas/2.png";
+import marca3 from "../assets/marcas/3.png";
+import marca4 from "../assets/marcas/4.png";
+import marca5 from "../assets/marcas/5.png";
+import marca6 from "../assets/marcas/6.png";
+import marca7 from "../assets/marcas/7.png";
+import marca8 from "../assets/marcas/8.png";
 
 // Showcase.astro — Portfolio showcase with animated stats and mockup
 ---
@@ -193,7 +201,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/1.png"
+              src={marca1}
               alt="Bornas y Terminales"
               class="brand-logo"
               width={800}
@@ -206,7 +214,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/2.png"
+              src={marca2}
               alt="Cables Colombia"
               class="brand-logo"
               width={800}
@@ -219,7 +227,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/3.png"
+              src={marca3}
               alt="Ilutecno"
               class="brand-logo"
               width={800}
@@ -232,7 +240,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/4.png"
+              src={marca4}
               alt="Importaciones LED"
               class="brand-logo"
               width={800}
@@ -245,7 +253,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/5.png"
+              src={marca5}
               alt="Maeléctricos"
               class="brand-logo"
               width={800}
@@ -258,7 +266,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/6.png"
+              src={marca6}
               alt="Ledtogo"
               class="brand-logo"
               width={800}
@@ -271,7 +279,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/7.png"
+              src={marca7}
               alt="Comem"
               class="brand-logo"
               width={800}
@@ -281,7 +289,7 @@ import { Image } from "astro:assets";
           >
           <a href="https://electrificadoracapital.com/referrer"
             ><Image
-              src="/marcas/8.png"
+              src={marca8}
               alt="Electrificadora Capital"
               class="brand-logo"
               width={800}
@@ -296,7 +304,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/1.png"
+              src={marca1}
               alt="Bornas y Terminales"
               class="brand-logo"
               width={800}
@@ -309,7 +317,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/2.png"
+              src={marca2}
               alt="Cables Colombia"
               class="brand-logo"
               width={800}
@@ -322,7 +330,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/3.png"
+              src={marca3}
               alt="Ilutecno"
               class="brand-logo"
               width={800}
@@ -335,7 +343,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/4.png"
+              src={marca4}
               alt="Importaciones LED"
               class="brand-logo"
               width={800}
@@ -348,7 +356,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/5.png"
+              src={marca5}
               alt="Maeléctricos"
               class="brand-logo"
               width={800}
@@ -361,7 +369,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/6.png"
+              src={marca6}
               alt="Ledtogo"
               class="brand-logo"
               width={800}
@@ -374,7 +382,7 @@ import { Image } from "astro:assets";
             target="_blank"
             rel="noopener noreferrer"
             ><Image
-              src="/marcas/7.png"
+              src={marca7}
               alt="Comem"
               class="brand-logo"
               width={800}
@@ -384,7 +392,7 @@ import { Image } from "astro:assets";
           >
           <a href="https://electrificadoracapital.com/referrer"
             ><Image
-              src="/marcas/8.png"
+              src={marca8}
               alt="Electrificadora Capital"
               class="brand-logo"
               width={800}
@@ -868,10 +876,15 @@ import { Image } from "astro:assets";
     };
   }
 
-  document.addEventListener("DOMContentLoaded", initShowcaseAnimationVisibility);
+  document.addEventListener(
+    "DOMContentLoaded",
+    initShowcaseAnimationVisibility,
+  );
   document.addEventListener("astro:page-load", initShowcaseAnimationVisibility);
   window.addEventListener("pagehide", () => {
-    (window as Window & { __ddShowcaseCleanup?: () => void }).__ddShowcaseCleanup?.();
+    (
+      window as Window & { __ddShowcaseCleanup?: () => void }
+    ).__ddShowcaseCleanup?.();
   });
 </script>
 

@@ -1,5 +1,25 @@
 ---
 import { Image } from "astro:assets";
+import analiticaVip from "../assets/Servicios/analitica-vip.png";
+import arquitectura from "../assets/Servicios/arquitectura.png";
+import catalogoPlus from "../assets/Servicios/catalogo-plus.png";
+import chatbotsIa from "../assets/Servicios/chatbots-ia.png";
+import cifradoE2e from "../assets/Servicios/cifrado-e2e.png";
+import cloudApi from "../assets/Servicios/cloud-api.png";
+import datosCore from "../assets/Servicios/datos-core.png";
+import disenoUxUi from "../assets/Servicios/diseno-ux-ui.png";
+import escalabilidad from "../assets/Servicios/escalabilidad.png";
+import globalCdn from "../assets/Servicios/global-cdn.png";
+import inventarios from "../assets/Servicios/inventarios.png";
+import megaEcommerce from "../assets/Servicios/mega-ecommerce.png";
+import metricas from "../assets/Servicios/metricas.png";
+import optimizacion from "../assets/Servicios/optimizacion.png";
+import seguridadTls from "../assets/Servicios/seguridad-tls.png";
+import soportePro from "../assets/Servicios/soporte-pro.png";
+import traficoB2b from "../assets/Servicios/trafico-b2b.png";
+import velocidad from "../assets/Servicios/velocidad.png";
+import ventasB2c from "../assets/Servicios/ventas-b2c.png";
+import whatsappBot from "../assets/Servicios/whatsapp-bot.png";
 
 // Services.astro — Grid Animado GSAP Flip (Expansión On-Scroll)
 // Estado Inicial: 20 cajas pequeñas (1x1). 
@@ -8,28 +28,28 @@ import { Image } from "astro:assets";
 
 const gridData = [
   // 8 Cajas que se pueden expandir y alternar tamaños (Ahora todas son de 2x2 para ser formas muy cuadradas)
-  { word: "Mega E-Commerce", phrase: "Tiendas online a medida y escalables.", cols: 2, rows: 2, expands: true, image: "/Servicios/mega-ecommerce.png" },
-  { word: "Chatbots IA", phrase: "Agentes inteligentes cerrando ventas 24/7.", cols: 2, rows: 2, expands: true, image: "/Servicios/chatbots-ia.png" },
-  { word: "Catálogo Plus", phrase: "Filtros y miles de SKUs automatizados.", cols: 2, rows: 2, expands: true, image: "/Servicios/catalogo-plus.png" },
-  { word: "WhatsApp Bot", phrase: "Cotizaciones automáticas en el chat.", cols: 2, rows: 2, expands: true, image: "/Servicios/whatsapp-bot.png" },
-  { word: "Analítica VIP", phrase: "Dashboard real-time con estadísticas.", cols: 2, rows: 2, expands: true, image: "/Servicios/analitica-vip.png" },
-  { word: "Diseño UX/UI", phrase: "Interfaces modernas de alta retención.", cols: 2, rows: 2, expands: true, image: "/Servicios/diseno-ux-ui.png" },
-  { word: "Escalabilidad", phrase: "Infraestructura elástica para crecer.", cols: 2, rows: 2, expands: true, image: "/Servicios/escalabilidad.png" },
-  { word: "Seguridad TLS", phrase: "Cifrado militar en transacciones.", cols: 2, rows: 2, expands: true, image: "/Servicios/seguridad-tls.png" },
+  { word: "Mega E-Commerce", phrase: "Tiendas online a medida y escalables.", cols: 2, rows: 2, expands: true, image: megaEcommerce },
+  { word: "Chatbots IA", phrase: "Agentes inteligentes cerrando ventas 24/7.", cols: 2, rows: 2, expands: true, image: chatbotsIa },
+  { word: "Catálogo Plus", phrase: "Filtros y miles de SKUs automatizados.", cols: 2, rows: 2, expands: true, image: catalogoPlus },
+  { word: "WhatsApp Bot", phrase: "Cotizaciones automáticas en el chat.", cols: 2, rows: 2, expands: true, image: whatsappBot },
+  { word: "Analítica VIP", phrase: "Dashboard real-time con estadísticas.", cols: 2, rows: 2, expands: true, image: analiticaVip },
+  { word: "Diseño UX/UI", phrase: "Interfaces modernas de alta retención.", cols: 2, rows: 2, expands: true, image: disenoUxUi },
+  { word: "Escalabilidad", phrase: "Infraestructura elástica para crecer.", cols: 2, rows: 2, expands: true, image: escalabilidad },
+  { word: "Seguridad TLS", phrase: "Cifrado militar en transacciones.", cols: 2, rows: 2, expands: true, image: seguridadTls },
 
   // Cajas "Mortero" que sirven de relleno y fluyen dinámicamente
-  { word: "Velocidad", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/velocidad.png" },
-  { word: "Cloud API", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/cloud-api.png" },
-  { word: "Arquitectura", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/arquitectura.png" },
-  { word: "Inventarios", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/inventarios.png" },
-  { word: "Tráfico B2B", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/trafico-b2b.png" },
-  { word: "Ventas B2C", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/ventas-b2c.png" },
-  { word: "Datos Core", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/datos-core.png" },
-  { word: "Soporte Pro", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/soporte-pro.png" },
-  { word: "Cifrado E2E", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/cifrado-e2e.png" },
-  { word: "Global CDN", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/global-cdn.png" },
-  { word: "Optimización", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/optimizacion.png" },
-  { word: "Métricas", phrase: "", cols: 1, rows: 1, expands: false, image: "/Servicios/metricas.png" }
+  { word: "Velocidad", phrase: "", cols: 1, rows: 1, expands: false, image: velocidad },
+  { word: "Cloud API", phrase: "", cols: 1, rows: 1, expands: false, image: cloudApi },
+  { word: "Arquitectura", phrase: "", cols: 1, rows: 1, expands: false, image: arquitectura },
+  { word: "Inventarios", phrase: "", cols: 1, rows: 1, expands: false, image: inventarios },
+  { word: "Tráfico B2B", phrase: "", cols: 1, rows: 1, expands: false, image: traficoB2b },
+  { word: "Ventas B2C", phrase: "", cols: 1, rows: 1, expands: false, image: ventasB2c },
+  { word: "Datos Core", phrase: "", cols: 1, rows: 1, expands: false, image: datosCore },
+  { word: "Soporte Pro", phrase: "", cols: 1, rows: 1, expands: false, image: soportePro },
+  { word: "Cifrado E2E", phrase: "", cols: 1, rows: 1, expands: false, image: cifradoE2e },
+  { word: "Global CDN", phrase: "", cols: 1, rows: 1, expands: false, image: globalCdn },
+  { word: "Optimización", phrase: "", cols: 1, rows: 1, expands: false, image: optimizacion },
+  { word: "Métricas", phrase: "", cols: 1, rows: 1, expands: false, image: metricas }
 ];
 
 // Hay 20 cajas exactamente. 
