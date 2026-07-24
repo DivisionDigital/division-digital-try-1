@@ -281,13 +281,6 @@
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .grid-lines,
-    .pulse-dot,
-    .scroll-line {
-      animation-play-state: paused;
-    }
-  }
 </style>
 
 <script>
@@ -302,7 +295,6 @@
     const hero = document.querySelector<HTMLElement>('.hero');
     if (!hero) return;
 
-    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     let isVisible = true;
 
     const tl = gsap.timeline({ delay: 0.3 });
@@ -347,7 +339,7 @@
     ];
 
     const updateAnimationState = () => {
-      const shouldPause = !isVisible || motionQuery.matches;
+      const shouldPause = !isVisible;
       hero.classList.toggle('animations-paused', shouldPause);
       floatingTweens.forEach((tween) => {
         if (shouldPause) {
@@ -367,15 +359,11 @@
       { threshold: 0.05 }
     );
 
-    const handleMotionChange = () => updateAnimationState();
-
     visibilityObserver.observe(hero);
-    motionQuery.addEventListener('change', handleMotionChange);
     updateAnimationState();
 
     heroWindow.__ddHeroCleanup = () => {
       visibilityObserver.disconnect();
-      motionQuery.removeEventListener('change', handleMotionChange);
       tl.kill();
       floatingTweens.forEach((tween) => tween.kill());
       hero.classList.remove('animations-paused');

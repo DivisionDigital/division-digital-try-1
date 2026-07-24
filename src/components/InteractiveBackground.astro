@@ -57,7 +57,6 @@
     let particles: Particle[] = [];
     let dpr = window.devicePixelRatio || 1;
     let resizeTimer: number | undefined;
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     // --- Particle class ---
     class Particle {
@@ -265,7 +264,7 @@
 
     // --- Main animation loop ---
     function animate() {
-      if (document.hidden || motionQuery.matches) {
+      if (document.hidden) {
         animationId = null;
         return;
       }
@@ -288,7 +287,7 @@
     }
 
     function startAnimation() {
-      if (animationId !== null || document.hidden || motionQuery.matches) return;
+      if (animationId !== null || document.hidden) return;
       canvas.style.display = "";
       animationId = requestAnimationFrame(animate);
     }
@@ -338,15 +337,6 @@
       }
     }
 
-    function onMotionChange() {
-      if (motionQuery.matches) {
-        stopAnimation({ hide: true });
-      } else {
-        canvas.style.display = "";
-        startAnimation();
-      }
-    }
-
     // --- Setup ---
     resize();
     createParticles();
@@ -357,8 +347,6 @@
     document.addEventListener("mouseleave", onMouseLeave);
     window.addEventListener("resize", onResize);
     document.addEventListener("visibilitychange", onVisibilityChange);
-    motionQuery.addEventListener("change", onMotionChange);
-    onMotionChange();
 
     bgWindow.__ddInteractiveBackgroundCleanup = () => {
       stopAnimation();
@@ -368,7 +356,6 @@
       document.removeEventListener("mouseleave", onMouseLeave);
       window.removeEventListener("resize", onResize);
       document.removeEventListener("visibilitychange", onVisibilityChange);
-      motionQuery.removeEventListener("change", onMotionChange);
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     };
   }
