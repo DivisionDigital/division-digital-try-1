@@ -1,541 +1,834 @@
 ---
+// Services.astro — Interactive services carousel with direct quote actions
 import { Image } from "astro:assets";
 import analiticaVip from "../assets/Servicios/analitica-vip.png";
-import arquitectura from "../assets/Servicios/arquitectura.png";
-import catalogoPlus from "../assets/Servicios/catalogo-plus.png";
-import chatbotsIa from "../assets/Servicios/chatbots-ia.png";
-import cifradoE2e from "../assets/Servicios/cifrado-e2e.png";
 import cloudApi from "../assets/Servicios/cloud-api.png";
-import datosCore from "../assets/Servicios/datos-core.png";
 import disenoUxUi from "../assets/Servicios/diseno-ux-ui.png";
-import escalabilidad from "../assets/Servicios/escalabilidad.png";
-import globalCdn from "../assets/Servicios/global-cdn.png";
 import inventarios from "../assets/Servicios/inventarios.png";
 import megaEcommerce from "../assets/Servicios/mega-ecommerce.png";
 import metricas from "../assets/Servicios/metricas.png";
-import optimizacion from "../assets/Servicios/optimizacion.png";
-import seguridadTls from "../assets/Servicios/seguridad-tls.png";
-import soportePro from "../assets/Servicios/soporte-pro.png";
 import traficoB2b from "../assets/Servicios/trafico-b2b.png";
-import velocidad from "../assets/Servicios/velocidad.png";
-import ventasB2c from "../assets/Servicios/ventas-b2c.png";
-import whatsappBot from "../assets/Servicios/whatsapp-bot.png";
 
-// Services.astro — Grid Animado GSAP Flip (Expansión On-Scroll)
-// Estado Inicial: 20 cajas pequeñas (1x1). 
-// Estado Final: Cajas expansivas cobran vida y tamaño al entrar al viewport,
-// desplazando a las "pequeñas" hacia abajo. Si las pequeñas rebasan la cuadrícula de 4x5, desaparecen.
-
-const gridData = [
-  // 8 Cajas que se pueden expandir y alternar tamaños (Ahora todas son de 2x2 para ser formas muy cuadradas)
-  { word: "Mega E-Commerce", phrase: "Tiendas online a medida y escalables.", cols: 2, rows: 2, expands: true, image: megaEcommerce },
-  { word: "Chatbots IA", phrase: "Agentes inteligentes cerrando ventas 24/7.", cols: 2, rows: 2, expands: true, image: chatbotsIa },
-  { word: "Catálogo Plus", phrase: "Filtros y miles de SKUs automatizados.", cols: 2, rows: 2, expands: true, image: catalogoPlus },
-  { word: "WhatsApp Bot", phrase: "Cotizaciones automáticas en el chat.", cols: 2, rows: 2, expands: true, image: whatsappBot },
-  { word: "Analítica VIP", phrase: "Dashboard real-time con estadísticas.", cols: 2, rows: 2, expands: true, image: analiticaVip },
-  { word: "Diseño UX/UI", phrase: "Interfaces modernas de alta retención.", cols: 2, rows: 2, expands: true, image: disenoUxUi },
-  { word: "Escalabilidad", phrase: "Infraestructura elástica para crecer.", cols: 2, rows: 2, expands: true, image: escalabilidad },
-  { word: "Seguridad TLS", phrase: "Cifrado militar en transacciones.", cols: 2, rows: 2, expands: true, image: seguridadTls },
-
-  // Cajas "Mortero" que sirven de relleno y fluyen dinámicamente
-  { word: "Velocidad", phrase: "", cols: 1, rows: 1, expands: false, image: velocidad },
-  { word: "Cloud API", phrase: "", cols: 1, rows: 1, expands: false, image: cloudApi },
-  { word: "Arquitectura", phrase: "", cols: 1, rows: 1, expands: false, image: arquitectura },
-  { word: "Inventarios", phrase: "", cols: 1, rows: 1, expands: false, image: inventarios },
-  { word: "Tráfico B2B", phrase: "", cols: 1, rows: 1, expands: false, image: traficoB2b },
-  { word: "Ventas B2C", phrase: "", cols: 1, rows: 1, expands: false, image: ventasB2c },
-  { word: "Datos Core", phrase: "", cols: 1, rows: 1, expands: false, image: datosCore },
-  { word: "Soporte Pro", phrase: "", cols: 1, rows: 1, expands: false, image: soportePro },
-  { word: "Cifrado E2E", phrase: "", cols: 1, rows: 1, expands: false, image: cifradoE2e },
-  { word: "Global CDN", phrase: "", cols: 1, rows: 1, expands: false, image: globalCdn },
-  { word: "Optimización", phrase: "", cols: 1, rows: 1, expands: false, image: optimizacion },
-  { word: "Métricas", phrase: "", cols: 1, rows: 1, expands: false, image: metricas }
+const services = [
+  {
+    title: "Creación de E-Commerce",
+    category: "Venta digital",
+    description: "Tiendas online que convierten visitas en ventas y crecen al ritmo de tu negocio.",
+    highlights: ["Catálogo estratégico", "Pagos integrados", "Checkout ágil"],
+    metric: "Tu tienda lista para vender",
+    quoteValue: "creacion-ecommerce",
+    image: megaEcommerce,
+    accent: "247 8 92",
+  },
+  {
+    title: "Administración de E-Commerce",
+    category: "Operación comercial",
+    description: "Mantenemos tu tienda activa, ordenada y enfocada en convertir cada oportunidad.",
+    highlights: ["Inventario al día", "Campañas activas", "Conversión continua"],
+    metric: "Operación que no se detiene",
+    quoteValue: "gestion-ecommerce",
+    image: inventarios,
+    accent: "183 74 255",
+  },
+  {
+    title: "Videos de Marketing",
+    category: "Contenido que vende",
+    description: "Piezas audiovisuales que capturan atención y hacen que tu producto se recuerde.",
+    highlights: ["Reels que detienen", "Anuncios que venden", "Edición premium"],
+    metric: "Contenido listo para destacar",
+    quoteValue: "videos-marketing",
+    image: disenoUxUi,
+    accent: "255 126 54",
+  },
+  {
+    title: "Sistemas de Automatización",
+    category: "Procesos inteligentes",
+    description: "Conectamos tareas, prospectos y datos para que tu equipo avance con menos fricción.",
+    highlights: ["CRM conectado", "Flujos 24/7", "Menos tareas"],
+    metric: "Menos tareas. Más tiempo.",
+    quoteValue: "automatizacion",
+    image: cloudApi,
+    accent: "44 190 183",
+  },
+  {
+    title: "Gestión de Redes Sociales",
+    category: "Comunidad y marca",
+    description: "Una presencia constante para que tu marca conecte, converse y se mantenga presente.",
+    highlights: ["Calendario vivo", "Comunidad activa", "Marca consistente"],
+    metric: "Tu marca en movimiento",
+    quoteValue: "redes-sociales",
+    image: traficoB2b,
+    accent: "100 103 255",
+  },
+  {
+    title: "Google y Meta Ads",
+    category: "Adquisición de clientes",
+    description: "Campañas de pauta enfocadas en llegar a personas con intención real de compra.",
+    highlights: ["Audiencias listas", "Creativos que convierten", "ROAS medible"],
+    metric: "Tráfico con intención",
+    quoteValue: "google-meta-ads",
+    image: metricas,
+    accent: "247 8 92",
+  },
+  {
+    title: "Estrategia y Analítica Digital",
+    category: "Decisiones con datos",
+    description: "Convertimos información de tu negocio en decisiones claras para crecer con dirección.",
+    highlights: ["Métricas claras", "Decisiones rápidas", "Ruta de crecimiento"],
+    metric: "Claridad para decidir",
+    quoteValue: "estrategia-analitica",
+    image: analiticaVip,
+    accent: "183 74 255",
+  },
 ];
-
-// Hay 20 cajas exactamente. 
-// Las sorteamos al azar para que el orden de configuración de origen varíe.
-const bentoItems = [...gridData].sort(() => Math.random() - 0.5);
 ---
 
 <section id="servicios" class="section services-section">
-  <!-- Glowing effects -->
-  <div class="services-glow glow-orb glow-orb-accent" aria-hidden="true"></div>
+  <div class="services-orb services-orb-left glow-orb glow-orb-accent" aria-hidden="true"></div>
+  <div class="services-orb services-orb-right glow-orb" aria-hidden="true"></div>
 
-  <div class="container-fluid" style="padding: 0 4%;">
-    <div class="section-header" style="max-width: 800px; margin: 0 auto 3rem auto; text-align: center;">
-      <span class="section-label reveal">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Galería de Servicios
-      </span>
-      <h2 class="reveal" data-delay="0.1">Ecosistema <span class="text-gradient">Fluido</span></h2>
+  <div class="container">
+    <div class="services-intro">
+      <div class="services-intro-copy">
+        <span class="section-label reveal">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4L12 2z" />
+          </svg>
+          Servicios digitales
+        </span>
+        <h2 class="reveal" data-delay="0.1">
+          Elige el próximo impulso de <span class="text-gradient">tu marca</span>
+        </h2>
+      </div>
       <p class="reveal" data-delay="0.2">
-        Las soluciones robustas desplazan a lo simple. Un sistema diseñado para priorizar lo que realmente importa en tu negocio al instante.
+        Diseñamos el servicio exacto que tu negocio necesita hoy para vender, conectar y avanzar mañana.
       </p>
     </div>
 
-    <!-- 
-      Grid Limitado: 4 Filas Exactas (4 * 150 + 3 gaps = 648px)
-      Las cajas que son desbordadas de aquí caerán en el "overflow: hidden" suavemente por la animación.
-    -->
-    <div class="bento-wrapper overflow-lock reveal" data-delay="0.3">
-      <div class="dense-bento-grid">
-        {
-          bentoItems.map((item) => (
-            <!-- INICIALMENTE TODO ES CHICO (col-span-1 row-span-1) PARA CABER.
-                 Mantenemos data-target listos para ser leídos por Flip. -->
-            <div
-              class="bento-cell col-span-1 row-span-1 is-compact"
-              data-target-col={item.cols}
-              data-target-row={item.rows}
-            >
-              <!-- Fondo (Imagen 100% si existe) -->
-              <div class="bento-bg-image">
-                {item.image ? (
-                  <Image src={item.image} alt={item.word} width={600} height={600} loading="lazy" />
-                ) : (
-                  <div class="bg-placeholder-pattern"></div>
-                )}
-              </div>
+    <div class="services-carousel reveal" data-delay="0.25" data-services-carousel>
+      <div class="carousel-toolbar">
+        <div class="carousel-toolbar-copy">
+          <span class="carousel-kicker">Explora nuestra propuesta</span>
+          <p>Desliza, descubre y encuentra la solución que hará que tu negocio se mueva.</p>
+        </div>
+        <div class="carousel-navigation">
+          <span class="carousel-counter" data-carousel-counter aria-live="polite">01 / 07</span>
+          <button class="carousel-control" type="button" data-carousel-prev aria-label="Ver servicios anteriores">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 12H5M11 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button class="carousel-control carousel-control-next" type="button" data-carousel-next aria-label="Ver más servicios">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
-              <!-- Degradado oscuro -->
-              <div class="bento-overlay"></div>
+      <div class="carousel-viewport" data-carousel-viewport>
+        <div class="carousel-track" data-carousel-track>
+          {
+            services.map((service, index) => (
+              <article class="service-slide" style={`--service-rgb: ${service.accent}`} data-carousel-slide>
+                <div class="service-slide-media">
+                  <Image
+                    src={service.image}
+                    alt=""
+                    width={760}
+                    height={760}
+                    loading={index > 2 ? "lazy" : "eager"}
+                    class="service-slide-image"
+                  />
+                  <div class="service-slide-media-overlay"></div>
+                  <span class="service-slide-number">{String(index + 1).padStart(2, "0")}</span>
+                  <span class="service-slide-orbit" aria-hidden="true"></span>
+                  <span class="service-slide-metric">{service.metric}</span>
+                </div>
 
-              <!-- Contenidos: Se revelará la 'phrase' solo si el CSS detecta que creció -->
-              <div class="bento-content">
-                <h3 class="bento-word">{item.word}</h3>
-                <p class="bento-phrase">{item.phrase}</p>
-              </div>
-            </div>
-          ))
-        }
+                <div class="service-slide-content">
+                  <span class="service-slide-category">{service.category}</span>
+                  <h3>{service.title}</h3>
+                  <p>{service.description}</p>
+                  <ul class="service-highlights" aria-label={`Incluye ${service.title}`}>
+                    {service.highlights.map((highlight) => <li>{highlight}</li>)}
+                  </ul>
+                  <a href="#contacto" class="service-quote-button" data-quote-service={service.quoteValue}>
+                    Quiero cotizar
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="carousel-footer">
+        <div class="carousel-progress" aria-hidden="true">
+          <span data-carousel-progress></span>
+        </div>
+        <p>Servicios diseñados para acompañarte desde la primera idea hasta la próxima venta.</p>
       </div>
     </div>
+
+    <aside class="services-quote-panel reveal" data-delay="0.35">
+      <div class="services-quote-spark" aria-hidden="true">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9L4.9 19.1" />
+        </svg>
+      </div>
+      <div>
+        <span>Tu negocio merece una estrategia que se note</span>
+        <h3>Hagamos que tu próxima acción digital tenga un impacto real.</h3>
+      </div>
+      <a href="#contacto" class="btn btn-primary services-quote-cta" data-quote-service="solucion-integral">
+        Quiero mi cotización personalizada
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
+      </a>
+    </aside>
   </div>
 </section>
 
 <script>
-  import { gsap } from "gsap";
-  import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import { Flip } from "gsap/Flip";
+  import gsap from "gsap";
 
-  gsap.registerPlugin(ScrollTrigger, Flip);
-
-  function initBentoAnimation() {
+  function initServicesCarousel() {
     const servicesWindow = window as Window & {
-      __ddServicesCleanup?: () => void;
+      __ddServicesCarouselCleanup?: () => void;
     };
-    servicesWindow.__ddServicesCleanup?.();
+    servicesWindow.__ddServicesCarouselCleanup?.();
 
-    const grid = document.querySelector(".dense-bento-grid");
-    const wrapper = document.querySelector(".bento-wrapper");
-    const cellsArray = Array.from(grid?.querySelectorAll(".bento-cell") || []);
+    const carousel = document.querySelector<HTMLElement>("[data-services-carousel]");
+    const viewport = carousel?.querySelector<HTMLElement>("[data-carousel-viewport]");
+    const track = carousel?.querySelector<HTMLElement>("[data-carousel-track]");
+    const slides = Array.from(carousel?.querySelectorAll<HTMLElement>("[data-carousel-slide]") || []);
+    const previousButton = carousel?.querySelector<HTMLButtonElement>("[data-carousel-prev]");
+    const nextButton = carousel?.querySelector<HTMLButtonElement>("[data-carousel-next]");
+    const counter = carousel?.querySelector<HTMLElement>("[data-carousel-counter]");
+    const progress = carousel?.querySelector<HTMLElement>("[data-carousel-progress]");
+    const quoteLinks = document.querySelectorAll<HTMLAnchorElement>("[data-quote-service]");
+    const serviceSelect = document.getElementById("contact-service") as HTMLSelectElement | null;
+    const controller = new AbortController();
 
-    if (!grid || !wrapper || cellsArray.length === 0) return;
+    if (!carousel || !viewport || !track || slides.length === 0) return;
 
-    const clickController = new AbortController();
+    let activeIndex = 0;
+    let autoPlayTimer: number | undefined;
 
-    // --- Efecto de Interacción: Click en la Imagen ---
-    // Se añade un evento a cada tarjeta para que al hacer click, solo se anime la imagen interna
-    cellsArray.forEach((cell) => {
-      const img = cell.querySelector('img, .bg-placeholder-pattern');
-      if (img) {
-        // Le damos estilo de botón para que el usuario sepa que es clickeable
-        (cell as HTMLElement).style.cursor = 'pointer';
-        
-        cell.addEventListener('click', () => {
-          if (gsap.isTweening(img)) return;
+    const cardsPerView = () => {
+      if (window.innerWidth <= 640) return 1;
+      if (window.innerWidth <= 980) return 2;
+      return 3;
+    };
 
-          // Animación Premium: Efecto Táctil
-          // Se hunde rápido como un botón físico, y se recupera con mucha inercia y elegancia
-          gsap.timeline()
-            .to(img, {
-              scale: 0.95,
-              opacity: 0.5,
-              duration: 0.1,
-              ease: "power2.inOut"
-            })
-            .to(img, {
-              scale: 1,
-              opacity: 1,
-              duration: 0.8,
-              ease: "expo.out" 
-            });
-        }, { signal: clickController.signal });
-      }
-    });
+    const maxIndex = () => Math.max(0, slides.length - cardsPerView());
 
-    // Detectar qué módulos son expansibles leyendo si su target es mayor a 1
-    const expandableCells = cellsArray.filter((cell) => {
-      const col = parseInt(cell.getAttribute("data-target-col") || "1");
-      const row = parseInt(cell.getAttribute("data-target-row") || "1");
-      return col > 1 || row > 1;
-    });
+    const updateCarousel = (animate = true) => {
+      const cardWidth = slides[0]?.getBoundingClientRect().width || 0;
+      const gap = Number.parseFloat(window.getComputedStyle(track).gap) || 0;
+      activeIndex = Math.min(activeIndex, maxIndex());
+      const offset = activeIndex * (cardWidth + gap);
 
-    // GSAP MatchMedia: Accesibilidad, Responsive y Limpieza de Memoria
-    const mm = gsap.matchMedia();
-
-    mm.add("(min-width: 900px)", () => {
-      // Accesibilidad: checamos nativamente el movimiento reducido para evitar errores de tipado de GSAP
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (prefersReducedMotion) return;
-
-      let currentIndex = 0;
-      let timer: ReturnType<typeof gsap.delayedCall> | null = null;
-      let activeFlipTween: any = null; // Guardamos el tween para el cleanup
-      let activeTrigger: ScrollTrigger | null = null;
-      let isActive = false;
-      let isAnimating = false;
-
-      function clearTimer() {
-        if (timer) {
-          timer.kill();
-          timer = null;
-        }
-      }
-
-      function scheduleNextStep() {
-        clearTimer();
-        if (isActive) {
-          timer = gsap.delayedCall(3.5, animateGridStep);
-        }
-      }
-      
-      // Bucle Mágico de GSAP Flip (Expansión única y lenta por ciclo)
-      function animateGridStep() {
-        if (!isActive || isAnimating) return;
-        isAnimating = true;
-
-        const state = Flip.getState(cellsArray);
-
-        // Regresamos TODAS al estado base (fusión en reverso)
-        expandableCells.forEach((cell) => {
-          cell.classList.remove("col-span-2", "row-span-2");
-          cell.classList.add("col-span-1", "row-span-1", "is-compact");
+      if (animate) {
+        gsap.to(track, {
+          x: -offset,
+          duration: 0.72,
+          ease: "power3.inOut",
+          overwrite: "auto",
         });
-
-        const gridContainer = document.querySelector(".dense-bento-grid");
-
-        // Mantenemos 4 celdas expandidas a la vez. 
-        const numExpanded = 4;
-        const currentActiveBoxes = [];
-        
-        for (let i = 0; i < numExpanded; i++) {
-          const cellToExpand = expandableCells[(currentIndex + i) % expandableCells.length];
-          const tCol = cellToExpand.getAttribute("data-target-col");
-          const tRow = cellToExpand.getAttribute("data-target-row");
-          cellToExpand.classList.remove("col-span-1", "row-span-1", "is-compact");
-          cellToExpand.classList.add(`col-span-${tCol}`, `row-span-${tRow}`);
-          currentActiveBoxes.push(cellToExpand);
-        }
-
-        // TRUCO DE GRID:
-        // Movemos físicamente las cajas expandidas al principio del DOM contenedor.
-        // Esto fuerza al CSS Grid a ubicarlas en la parte superior (filas 1 a la 3).
-        // Evita que cajas gigantes sean arrojadas a la fila 4 y se corten a la mitad con el overflow.
-        if (gridContainer) {
-          currentActiveBoxes.reverse().forEach(box => gridContainer.prepend(box));
-        }
-
-        // Animación de fusión súper suave
-        activeFlipTween = Flip.from(state, {
-          duration: 2.2,            // Más tiempo = más elegante
-          ease: "power2.inOut",     // Desaceleración en los bordes
-          absolute: true,           
-          onComplete: () => {
-            isAnimating = false;
-            currentIndex++;
-            // Espera 3.5 segundos contemplando la caja grande antes del sigiendo cambio
-            scheduleNextStep();
-          }
-        });
+      } else {
+        gsap.set(track, { x: -offset });
       }
 
-      function pauseGrid() {
-        isActive = false;
-        clearTimer();
-        if (activeFlipTween && activeFlipTween.progress() < 1) {
-          activeFlipTween.pause();
-        }
-      }
-
-      function resumeGrid() {
-        isActive = true;
-        if (activeFlipTween && activeFlipTween.progress() < 1) {
-          activeFlipTween.resume();
-          return;
-        }
-        if (!timer) {
-          animateGridStep();
-        }
-      }
-
-      activeTrigger = ScrollTrigger.create({
-        trigger: wrapper,
-        start: "top 80%",
-        end: "bottom top",
-        onEnter: resumeGrid,
-        onEnterBack: resumeGrid,
-        onLeave: pauseGrid,
-        onLeaveBack: pauseGrid,
+      slides.forEach((slide, index) => {
+        const isVisible = index >= activeIndex && index < activeIndex + cardsPerView();
+        slide.classList.toggle("is-carousel-visible", isVisible);
       });
 
-      // Cleanup vital: Astro SPAs o resizes de pantalla deben limpiar memoria (GSAP Core Standard)
-      return () => {
-        isActive = false;
-        isAnimating = false;
-        clearTimer();
-        if (activeFlipTween) activeFlipTween.kill();
-        activeTrigger?.kill();
-        // Restaurar estado DOM a compacto
-        expandableCells.forEach((cell) => {
-          cell.classList.remove("col-span-2", "row-span-2");
-          cell.classList.add("col-span-1", "row-span-1", "is-compact");
-        });
-      };
+      if (counter) {
+        counter.textContent = `${String(activeIndex + 1).padStart(2, "0")} / ${String(slides.length).padStart(2, "0")}`;
+      }
+
+      if (progress) {
+        progress.style.transform = `scaleX(${(activeIndex + 1) / (maxIndex() + 1)})`;
+      }
+    };
+
+    const moveCarousel = (direction: 1 | -1) => {
+      const lastIndex = maxIndex();
+      activeIndex = direction === 1
+        ? activeIndex >= lastIndex ? 0 : activeIndex + 1
+        : activeIndex <= 0 ? lastIndex : activeIndex - 1;
+      updateCarousel();
+    };
+
+    const stopAutoPlay = () => {
+      window.clearInterval(autoPlayTimer);
+      autoPlayTimer = undefined;
+    };
+
+    const startAutoPlay = () => {
+      stopAutoPlay();
+      autoPlayTimer = window.setInterval(() => moveCarousel(1), 6500);
+    };
+
+    previousButton?.addEventListener("click", () => moveCarousel(-1), { signal: controller.signal });
+    nextButton?.addEventListener("click", () => moveCarousel(1), { signal: controller.signal });
+    carousel.addEventListener("pointerenter", stopAutoPlay, { signal: controller.signal });
+    carousel.addEventListener("pointerleave", startAutoPlay, { signal: controller.signal });
+    carousel.addEventListener("focusin", stopAutoPlay, { signal: controller.signal });
+    carousel.addEventListener("focusout", () => {
+      window.setTimeout(() => {
+        if (!carousel.matches(":focus-within")) startAutoPlay();
+      }, 0);
+    }, { signal: controller.signal });
+
+    quoteLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        const serviceValue = link.dataset.quoteService;
+        if (serviceSelect && serviceValue) serviceSelect.value = serviceValue;
+      }, { signal: controller.signal });
     });
 
-    // MÓVIL (Efecto Stacking / Tarjetas Apilables)
-    mm.add("(max-width: 899px)", () => {
-      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (prefersReducedMotion) return;
+    const resizeObserver = new ResizeObserver(() => updateCarousel(false));
+    resizeObserver.observe(viewport);
+    updateCarousel(false);
+    startAutoPlay();
 
-      // Desactivamos clases limitantes de tamaño inicial
-      expandableCells.forEach((c) => {
-        c.classList.remove("col-span-1", "row-span-1", "is-compact");
-        // Les damos la clase grande para que el CSS aplique los estilos de tarjeta expandida
-        c.classList.add("col-span-2", "row-span-2");
-      });
-
-      let triggers: ScrollTrigger[] = [];
-
-      // Efecto Stacking: las cartas se encogen y pierden opacidad a medida que suben por debajo de la siguiente
-      expandableCells.forEach((card, index) => {
-        if (index === expandableCells.length - 1) return; // La última carta no se encoge porque nada la tapa
-
-        const st = ScrollTrigger.create({
-          trigger: card,
-          start: "top 120px", // Mismo valor que el top de position: sticky en CSS
-          endTrigger: wrapper, // Terminar efecto al final de toda la sección
-          end: "bottom top", 
-          pin: false, // Usamos position: sticky de CSS nativo para mejor performance
-          pinSpacing: false,
-          scrub: true,
-          animation: gsap.to(card, {
-            scale: 0.92 - (index * 0.01),
-            opacity: 0.3,
-            transformOrigin: "top center",
-            ease: "none"
-          })
-        });
-        triggers.push(st);
-      });
-
-      return () => {
-        triggers.forEach(t => t.kill());
-        expandableCells.forEach((c) => {
-          c.classList.add("col-span-1", "row-span-1", "is-compact");
-          c.classList.remove("col-span-2", "row-span-2");
-          gsap.set(c, { clearProps: "all" });
-        });
-      };
-    });
-
-    servicesWindow.__ddServicesCleanup = () => {
-      clickController.abort();
-      mm.revert();
-      gsap.killTweensOf(cellsArray);
+    servicesWindow.__ddServicesCarouselCleanup = () => {
+      controller.abort();
+      stopAutoPlay();
+      resizeObserver.disconnect();
+      gsap.killTweensOf(track);
+      gsap.set(track, { clearProps: "transform" });
     };
   }
 
-  initBentoAnimation();
-  document.addEventListener('astro:page-load', initBentoAnimation);
-  window.addEventListener('pagehide', () => {
-    (window as Window & { __ddServicesCleanup?: () => void }).__ddServicesCleanup?.();
+  document.addEventListener("DOMContentLoaded", initServicesCarousel);
+  document.addEventListener("astro:page-load", initServicesCarousel);
+  window.addEventListener("pagehide", () => {
+    (window as Window & { __ddServicesCarouselCleanup?: () => void }).__ddServicesCarouselCleanup?.();
   });
 </script>
 
 <style>
   .services-section {
     position: relative;
+    overflow: hidden;
     background: var(--bg-secondary);
-    padding: var(--space-xl) 0;
   }
 
-  .services-glow {
-    width: 700px; height: 700px;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.1;
+  .services-orb {
+    width: 600px;
+    height: 600px;
+    opacity: 0.09;
     pointer-events: none;
   }
 
-  /* 
-    ENVOLTORIO ESTRICTO (El pozo desbordante)
-    Debe tener ALTURA FIJA para que el Flip (absolute:true) no colapse el grid
-    a 0 pixeles y los elementos "desaparezcan y aparezcan de la nada".
-    (4 * 240px) + (3 gaps * 16px) = 1008px
-  */
-  .bento-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 1264px; /* Limita el ancho y hace que las cajas 1x1 sean de ~240x240px */
-    margin: 0 auto; /* Centra la cuadrícula */
-    height: 1008px; /* ALTURA FIJA ESTRICTA */
-    overflow: hidden; 
-    border-radius: var(--radius-xl);
+  .services-orb-left {
+    top: 2%;
+    left: -360px;
   }
 
-  .dense-bento-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-auto-rows: 240px; /* Incrementado para forzar que las cajas 1x1 sean cuadradas */
-    grid-auto-flow: dense;
-    gap: 16px;
-    width: 100%;
-    height: 100%; /* Fuerza a heredar la altura para no colapsar nunca */
-    position: relative;
+  .services-orb-right {
+    right: -340px;
+    bottom: 2%;
+    opacity: 0.06;
   }
 
-  /* Span Classes Reales para CSS Grid */
-  .col-span-1 { grid-column: span 1; }
-  .col-span-2 { grid-column: span 2; }
-  .row-span-1 { grid-row: span 1; }
-  .row-span-2 { grid-row: span 2; }
-
-  /* Molde de la caja */
-  .bento-cell {
+  .services-intro {
     position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-lg);
-    
-    /* Fondo casi transparente y desenfoque para integrarse con la página */
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(12px) saturate(160%);
-    -webkit-backdrop-filter: blur(12px) saturate(160%);
-    
-    /* Relieve sutil integrado */
-    border: 1px solid rgba(255, 255, 255, 0.02);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-left: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 
-      0 10px 30px rgba(0, 0, 0, 0.1), 
-      inset 0px 1px 1px rgba(255, 255, 255, 0.03);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: var(--space-lg);
-  }
-
-  /* Contenedores de color e imagen al 100% */
-  .bento-bg-image {
-    position: absolute;
-    inset: 0;
     z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+    align-items: end;
+    gap: var(--space-2xl);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .services-intro h2 {
+    max-width: 740px;
+    margin-top: var(--space-md);
+  }
+
+  .services-intro > p {
+    max-width: 440px;
+    margin-bottom: 0.35rem;
+    font-size: 1.02rem;
+  }
+
+  .services-carousel {
+    position: relative;
+    z-index: 1;
+    padding: clamp(1rem, 2.5vw, 1.75rem);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 30px;
+    background:
+      linear-gradient(140deg, rgba(247, 8, 92, 0.09), transparent 27%),
+      linear-gradient(315deg, rgba(107, 15, 255, 0.09), transparent 35%),
+      rgba(8, 8, 14, 0.66);
+    box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(18px);
+  }
+
+  .carousel-toolbar,
+  .carousel-footer {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
   }
-  .bg-placeholder-pattern {
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(45deg, rgba(247, 8, 92, 0.02), rgba(247, 8, 92, 0.02) 10px, transparent 10px, transparent 20px);
+
+  .carousel-toolbar {
+    margin-bottom: var(--space-lg);
+    padding: 0.25rem 0.25rem 0;
   }
-  .bento-overlay {
+
+  .carousel-kicker,
+  .service-slide-category,
+  .services-quote-panel > div > span {
+    color: var(--accent-light);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .carousel-toolbar-copy p {
+    margin-top: 0.35rem;
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+  }
+
+  .carousel-navigation {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .carousel-counter {
+    min-width: 58px;
+    margin-right: 0.35rem;
+    color: var(--text-primary);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .carousel-control {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    transition: background var(--transition-base), border-color var(--transition-base), color var(--transition-base), transform var(--transition-base);
+  }
+
+  .carousel-control:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: var(--shadow-accent);
+    transform: translateY(-2px);
+  }
+
+  .carousel-viewport {
+    overflow: hidden;
+    padding-bottom: 12px;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: var(--space-lg);
+    will-change: transform;
+  }
+
+  .service-slide {
+    display: flex;
+    flex: 0 0 calc((100% - (var(--space-lg) * 2)) / 3);
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    background: rgba(18, 18, 26, 0.85);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    opacity: 0.7;
+    transform: scale(0.975);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base), opacity var(--transition-base), transform var(--transition-base);
+  }
+
+  .service-slide.is-carousel-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .service-slide:hover {
+    border-color: rgb(var(--service-rgb) / 0.62);
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--service-rgb) / 0.16),
+      inset 0 -64px 86px rgb(var(--service-rgb) / 0.06);
+  }
+
+  .service-slide-media {
+    position: relative;
+    isolation: isolate;
+    min-height: 225px;
+    overflow: hidden;
+    background: rgb(var(--service-rgb) / 0.12);
+  }
+
+  .service-slide-image {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.82;
+    transform: scale(1.03);
+    transition: transform 0.8s cubic-bezier(0.2, 0.75, 0.2, 1), opacity var(--transition-slow);
+  }
+
+  .service-slide:hover .service-slide-image {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+
+  .service-slide-media-overlay {
     position: absolute;
     inset: 0;
     z-index: 2;
-    /* Reducimos la oscuridad del overlay para que el fondo de la página respire más */
-    background: linear-gradient(to top, rgba(10, 10, 15, 0.7) 0%, rgba(10, 10, 15, 0.05) 60%, transparent 100%);
+    background:
+      linear-gradient(180deg, rgb(8 8 14 / 0.02) 15%, rgb(8 8 14 / 0.75) 100%),
+      linear-gradient(120deg, rgb(var(--service-rgb) / 0.42), transparent 60%);
+  }
+
+  .service-slide-number {
+    position: absolute;
+    z-index: 3;
+    top: 1rem;
+    left: 1rem;
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.24);
+    border-radius: 50%;
+    background: rgb(8 8 14 / 0.38);
+    color: var(--text-primary);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+  }
+
+  .service-slide-orbit {
+    position: absolute;
+    z-index: 0;
+    top: 20%;
+    right: -32px;
+    width: 138px;
+    height: 138px;
+    border: 1px solid rgb(255 255 255 / 0.27);
+    border-radius: 50%;
+    box-shadow: 0 0 0 24px rgb(var(--service-rgb) / 0.14), 0 0 0 46px rgb(var(--service-rgb) / 0.07);
+    transform: rotate(-18deg);
+    transition: transform 0.9s ease;
+  }
+
+  .service-slide:hover .service-slide-orbit {
+    transform: rotate(20deg) scale(1.09);
+  }
+
+  .service-slide-metric {
+    position: absolute;
+    z-index: 3;
+    right: 1rem;
+    bottom: 0.9rem;
+    left: 1rem;
+    color: var(--text-primary);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .service-slide-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.4rem 1.35rem 1.35rem;
+  }
+
+  .service-slide-content h3 {
+    min-height: 2.3em;
+    margin: 0.5rem 0 0.6rem;
+    color: var(--text-primary);
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+  }
+
+  .service-slide-content > p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.58;
+  }
+
+  .service-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1rem 0 1.15rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .service-highlights li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.38rem 0.55rem;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.06);
+    color: rgb(250 250 252 / 0.96);
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0.005em;
+    transition: border-color var(--transition-base), background var(--transition-base), transform var(--transition-base);
+  }
+
+  .service-highlights li::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgb(var(--service-rgb) / 0.95);
+    box-shadow: 0 0 8px rgb(var(--service-rgb) / 0.7);
+    content: "";
+  }
+
+  .service-slide:hover .service-highlights li {
+    border-color: rgb(var(--service-rgb) / 0.34);
+    background: rgb(var(--service-rgb) / 0.09);
+  }
+
+  .service-slide:hover .service-highlights li:nth-child(2) {
+    transform: translateY(-2px);
+  }
+
+  .service-quote-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    width: 100%;
+    margin-top: auto;
+    padding: 0.85rem 1rem;
+    border: 1px solid rgb(var(--service-rgb) / 0.62);
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgb(var(--service-rgb) / 0.95), rgb(var(--service-rgb) / 0.65));
+    box-shadow: 0 8px 24px rgb(var(--service-rgb) / 0.21);
+    color: white;
+    font-size: 0.86rem;
+    font-weight: 700;
+    transition: filter var(--transition-base), gap var(--transition-base), transform var(--transition-base);
+  }
+
+  .service-quote-button:hover {
+    gap: 0.8rem;
+    filter: brightness(1.16);
+    transform: translateY(-2px);
+  }
+
+  .carousel-footer {
+    margin-top: var(--space-lg);
+    padding: 0 0.25rem 0.2rem;
+  }
+
+  .carousel-footer p {
+    max-width: 470px;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-align: right;
+  }
+
+  .carousel-progress {
+    width: min(240px, 34%);
+    height: 3px;
+    overflow: hidden;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.11);
+  }
+
+  .carousel-progress span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--gradient-accent);
+    transform: scaleX(0.2);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+
+  .services-quote-panel {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-lg);
+    margin-top: var(--space-xl);
+    padding: clamp(1.25rem, 3vw, 1.9rem);
+    overflow: hidden;
+    border: 1px solid rgba(247, 8, 92, 0.35);
+    border-radius: var(--radius-xl);
+    background: linear-gradient(105deg, rgba(247, 8, 92, 0.17), rgba(107, 15, 255, 0.15), rgba(18, 18, 26, 0.78));
+    box-shadow: var(--shadow-accent);
+  }
+
+  .services-quote-panel::before {
+    position: absolute;
+    top: -120%;
+    right: 8%;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: rgba(247, 8, 92, 0.2);
+    content: "";
+    filter: blur(62px);
     pointer-events: none;
   }
 
-  /* Para que un <img> opcional que añadas fluya perfectamente adentro */
-  .bento-bg-image :global(img) {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-
-  /* Espacio de la tipografía */
-  .bento-content {
+  .services-quote-spark,
+  .services-quote-panel > div,
+  .services-quote-cta {
     position: relative;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    z-index: 1;
   }
 
-  .bento-word {
-    font-size: 1.15rem;
-    font-weight: 800;
+  .services-quote-spark {
+    display: grid;
+    width: 60px;
+    height: 60px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 18px;
+    background: rgba(247, 8, 92, 0.18);
+    color: var(--accent-light);
+  }
+
+  .services-quote-panel h3 {
+    max-width: 650px;
+    margin-top: 0.35rem;
     color: var(--text-primary);
-    margin: 0;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-    /* Suave transición en caso de que mute de caja chicha a caja enorme */
-    transition: font-size 0.8s ease, color 0.8s ease;
+    font-size: clamp(1.2rem, 2.6vw, 1.7rem);
   }
 
-  .bento-phrase {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    line-height: 1.4;
-    margin: 0;
-    display: none; 
-    opacity: 0;
+  .services-quote-cta {
+    min-height: 50px;
+    white-space: nowrap;
   }
 
-  /* Lógica de Visibilidad de Textos tras el Desplazamiento Flip */
-  /* Si la caja YA NO es compacta desvanecemos suavemente la frase descriptiva */
-  .bento-cell:not(.is-compact).col-span-2 .bento-phrase, 
-  .bento-cell:not(.is-compact).row-span-2 .bento-phrase {
-    display: block;
-    animation: fadeMio 0.8s ease forwards 0.5s; /* Un ligero delay para no verse mientras se mueve */
-  }
-  
-  @keyframes fadeMio { to { opacity: 0.85; } }
-
-  /* Responsive Adjustments */
-  @media (max-width: 900px) {
-    /* Optimización Móvil: Ocultamos el relleno */
-    .bento-cell[data-target-col="1"] {
-      display: none !important;
+  @media (max-width: 980px) {
+    .services-intro {
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
     }
-    
-    /* Configuración para Stacking Cards */
-    .bento-wrapper { 
-      width: 92%; 
-      max-width: 500px;
-      height: auto !important; /* Permitir scroll libre */
-      overflow: visible !important; /* Requisito estricto para position: sticky */
-      padding-bottom: 4rem; /* Aire al final */
-    } 
-    .dense-bento-grid { 
-      display: flex;
+
+    .services-intro > p {
+      max-width: 650px;
+    }
+
+    .service-slide {
+      flex-basis: calc((100% - var(--space-lg)) / 2);
+    }
+
+    .services-quote-panel {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .services-quote-cta {
+      grid-column: 2;
+      justify-self: start;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .services-intro {
+      margin-bottom: var(--space-xl);
+    }
+
+    .services-carousel {
+      padding: 0.9rem;
+      border-radius: 22px;
+    }
+
+    .carousel-toolbar,
+    .carousel-footer {
+      align-items: flex-start;
       flex-direction: column;
-      gap: 24px;
     }
 
-    .bento-cell {
-      position: sticky;
-      top: 120px; /* Punto donde se atascan */
-      height: 380px; /* Altura generosa para ver el texto e imagen */
+    .carousel-toolbar {
+      gap: var(--space-md);
+      padding: 0.35rem 0.25rem 0;
+    }
+
+    .carousel-navigation {
       width: 100%;
     }
-    
-    /* Forzar visibilidad del texto sin animaciones de delay molestas */
-    .bento-phrase {
-      display: block !important;
-      opacity: 0.85 !important;
-      animation: none !important;
-    }
-  }
 
-  @media (max-width: 500px) {
-    .bento-wrapper { width: 90%; }
-    .bento-cell { 
-      height: 340px; 
-      top: 100px;
+    .carousel-counter {
+      margin-right: auto;
+      text-align: left;
+    }
+
+    .service-slide {
+      flex-basis: 100%;
+    }
+
+    .service-slide-media {
+      min-height: 245px;
+    }
+
+    .service-slide-content {
+      padding: 1.25rem;
+    }
+
+    .service-slide-content h3 {
+      min-height: 0;
+    }
+
+    .carousel-footer p {
+      text-align: left;
+    }
+
+    .carousel-progress {
+      width: 100%;
+    }
+
+    .services-quote-panel {
+      grid-template-columns: 1fr;
+      gap: var(--space-md);
+    }
+
+    .services-quote-cta {
+      grid-column: auto;
+      width: 100%;
+      justify-self: stretch;
     }
   }
 </style>

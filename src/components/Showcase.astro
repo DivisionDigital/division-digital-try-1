@@ -822,17 +822,6 @@ import marca8 from "../assets/marcas/8.png";
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .mockup-scroll-area,
-    .click-target-1,
-    .click-target-2,
-    .click-target-3,
-    .click-target-4,
-    .click-target-5,
-    .brands-track {
-      animation-play-state: paused;
-    }
-  }
 </style>
 
 <script>
@@ -845,13 +834,12 @@ import marca8 from "../assets/marcas/8.png";
     const section = document.querySelector<HTMLElement>(".showcase-section");
     if (!section) return;
 
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let isVisible = false;
 
     const updateAnimationState = () => {
       section.classList.toggle(
         "animations-paused",
-        !isVisible || motionQuery.matches,
+        !isVisible,
       );
     };
 
@@ -863,15 +851,11 @@ import marca8 from "../assets/marcas/8.png";
       { threshold: 0.05 },
     );
 
-    const handleMotionChange = () => updateAnimationState();
-
     observer.observe(section);
-    motionQuery.addEventListener("change", handleMotionChange);
     updateAnimationState();
 
     showcaseWindow.__ddShowcaseCleanup = () => {
       observer.disconnect();
-      motionQuery.removeEventListener("change", handleMotionChange);
       section.classList.add("animations-paused");
     };
   }

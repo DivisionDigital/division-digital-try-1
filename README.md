@@ -2,7 +2,7 @@
 
 Landing estatica construida con Astro para presentar los servicios de Division Digital: soluciones e-commerce, inteligencia artificial, chat multiagente, automatizacion comercial y experiencias digitales de alto impacto.
 
-El proyecto esta organizado como una pagina unica con secciones modulares, animaciones GSAP, fondo interactivo en canvas, galeria de servicios tipo bento, mockup de portafolio, formulario visual de contacto y widget flotante de chat.
+El proyecto esta organizado como una pagina unica con secciones modulares, animaciones GSAP, fondo interactivo en canvas, modulo comercial de servicios, mockup de portafolio, formulario de cotizacion y widget flotante de chat.
 
 ## Stack principal
 
@@ -74,6 +74,13 @@ Valida tipos y diagnosticos de archivos Astro.
 `-- wrangler.jsonc
 ```
 
+## Contexto y seguimiento
+
+La carpeta `contexto/` conserva el diagnóstico técnico y la bitácora de cambios del proyecto:
+
+- `contexto/informe-analisis-inicial.md`: análisis de arquitectura, funcionamiento, rendimiento, seguridad y preparación para servicios.
+- `contexto/bitacora.md`: registro de cambios, decisiones y validaciones futuras.
+
 ## Pagina principal
 
 La ruta principal se define en `src/pages/index.astro`. Desde ahi se ensamblan las secciones del sitio:
@@ -81,7 +88,7 @@ La ruta principal se define en `src/pages/index.astro`. Desde ahi se ensamblan l
 - `InteractiveBackground`: fondo global interactivo con particulas en canvas.
 - `Navbar`: navegacion fija con efecto glassmorphism y menu movil.
 - `Hero`: bloque principal con CTA, metricas y animaciones de entrada.
-- `Services`: galeria bento de servicios con imagenes y animacion GSAP Flip.
+- `Services`: carrusel interactivo de servicios con imagenes, controles y accesos directos a cotizacion.
 - `Showcase`: mockup visual de e-commerce y carrusel de marcas.
 - `Process`: timeline animado del proceso de trabajo.
 - `ChatFeature`: demostracion visual del chat multiagente.
@@ -117,7 +124,7 @@ El proyecto usa animaciones en varias capas:
 - Canvas interactivo de particulas en `InteractiveBackground.astro`.
 - Animaciones de entrada en el hero con GSAP.
 - Menu movil animado en `Navbar.astro`.
-- Galeria bento con `ScrollTrigger`, `Flip` y `gsap.matchMedia()` en `Services.astro`.
+- Carrusel de servicios con transiciones GSAP, avance automatico y microinteracciones CSS.
 - Timeline ciclico del proceso en `Process.astro`.
 - Burbujas animadas en `ChatFeature.astro`.
 - Apertura, cierre y mensajes simulados en `ChatWidget.astro`.
