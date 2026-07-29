@@ -1,0 +1,9 @@
+allowBuilds:
+  "esbuild@0.27.3 || 0.28.1": true
+  sharp: set this to true or false
+  "sharp@0.35.3": true
+  "workerd@1.20260415.1 || 1.20260722.1": true
+
+overrides:
+  sharp: 0.35.3
+  svgo: 4.0.2
