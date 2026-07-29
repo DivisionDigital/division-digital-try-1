@@ -6,7 +6,8 @@ El proyecto esta organizado como una pagina unica con secciones modulares, anima
 
 ## Stack principal
 
-- Astro 6
+- Astro 7.1.6 en modo `server`
+- Adapter Cloudflare 14.1.7 para Workers
 - TypeScript con configuracion strict de Astro
 - GSAP 3 para animaciones
 - GSAP ScrollTrigger para animaciones al hacer scroll
@@ -14,7 +15,9 @@ El proyecto esta organizado como una pagina unica con secciones modulares, anima
 - CSS modular dentro de componentes Astro
 - CSS global con tokens de diseno
 - pnpm como gestor de paquetes
-- Cloudflare Workers Assets para despliegue estatico
+- Cloudflare Workers para SSR; la landing `/` continúa prerenderizada
+- Supabase PostgreSQL 17, Auth y Storage como infraestructura de datos del portal
+- Supabase CLI `2.110.0` fijada como dependencia de desarrollo
 
 ## Requisitos
 
@@ -39,7 +42,7 @@ Inicia el servidor de desarrollo de Astro.
 pnpm build
 ```
 
-Genera el sitio estatico en `dist/`.
+Genera el bundle SSR para Cloudflare en `dist/`; la landing `/` continúa prerenderizada.
 
 ```powershell
 pnpm preview
@@ -48,10 +51,16 @@ pnpm preview
 Sirve localmente el build de produccion.
 
 ```powershell
-pnpm astro check
+pnpm run check
 ```
 
 Valida tipos y diagnosticos de archivos Astro.
+
+```powershell
+pnpm exec supabase --version
+```
+
+Ejecuta la CLI versionada del proyecto. `supabase db reset` y `supabase test db` requieren Docker.
 
 ## Estructura del proyecto
 
@@ -68,6 +77,11 @@ Valida tipos y diagnosticos de archivos Astro.
 |   `-- styles/
 |-- docs/
 |   `-- deploy-cloudflare-workers.md
+|-- supabase/
+|   |-- migrations/
+|   |-- tests/database/
+|   |-- config.toml
+|   `-- seed.sql
 |-- astro.config.mjs
 |-- package.json
 |-- tsconfig.json
@@ -80,6 +94,27 @@ La carpeta `contexto/` conserva el diagnóstico técnico y la bitácora de cambi
 
 - `contexto/informe-analisis-inicial.md`: análisis de arquitectura, funcionamiento, rendimiento, seguridad y preparación para servicios.
 - `contexto/bitacora.md`: registro de cambios, decisiones y validaciones futuras.
+- `contexto/datos/modelo-fisico-supabase.md`: diccionario de tablas, ERD, estados, migraciones y validaciones del modelo implementado.
+- `contexto/seguridad/rls-supabase.md`: RLS, grants y politicas del bucket privado.
+- `supabase/README.md`: operación de migraciones, validación y promoción por entornos.
+
+## Infraestructura de datos
+
+El entorno remoto de desarrollo es `division-digital-dev` (`drvvtxbvgpygvcvqqofd`) en `sa-east-1`. Las migraciones imperativas de `supabase/migrations/` son la unica fuente de verdad del esquema.
+
+La implementacion incluye 28 tablas publicas con RLS, autoridad cliente e interna separadas, snapshots comerciales, formularios y workflows versionados, auditoria/outbox y el bucket privado `project-files`. Las 18 migraciones remotas están alineadas. Las 62 aserciones pgTAP están aprobadas y Security Advisor no presenta hallazgos. El seed idempotente publica el servicio piloto Landing Page; no contiene usuarios, datos personales, pagos ni secretos.
+
+El Data API solo expone al navegador seis columnas seguras del catálogo publicado. Perfiles, organizaciones, cotizaciones, proyectos, invitaciones, auditoría, webhooks y outbox se consumirán exclusivamente mediante la futura `/api/v1`. Ya existen clientes Supabase separados para navegador, SSR por petición y servidor privilegiado; no hay endpoints ni pantallas de login todavía. El detalle verificable y el flujo de promoción están en `contexto/datos/modelo-fisico-supabase.md`.
+
+Copiar `.env.example` a un archivo local ignorado por Git y definir:
+
+```text
+PUBLIC_SUPABASE_URL
+PUBLIC_SUPABASE_PUBLISHABLE_KEY
+SUPABASE_SECRET_KEY
+```
+
+La secret key solo puede existir en el runtime server y nunca debe usar el prefijo `PUBLIC_`.
 
 ## Pagina principal
 
@@ -164,26 +199,24 @@ Buenas practicas para estas integraciones:
 
 ## Deploy en Cloudflare Workers
 
-El proyecto esta configurado como sitio Astro estatico. `astro.config.mjs` no usa adapter SSR, por lo que el build genera archivos en `dist/`.
-
-La configuracion de Cloudflare esta en `wrangler.jsonc` y usa `dist/` como directorio de assets.
+Astro usa el adapter oficial de Cloudflare en modo `server`. La landing se compila como HTML prerenderizado y las futuras rutas privadas podrán ejecutarse bajo demanda en Workers.
 
 Flujo base:
 
 ```powershell
 pnpm build
-pnpm dlx wrangler@latest deploy
+pnpm exec wrangler deploy
 ```
 
 Hay una guia mas completa en `docs/deploy-cloudflare-workers.md`.
 
 ## Notas de mantenimiento
 
-- `dist/`, `.astro/`, `node_modules/` y `.agents/` estan ignorados por Git.
-- Antes de publicar, validar con `pnpm astro check` y `pnpm build`.
-- Si se agregan endpoints, SSR o bindings de Cloudflare, evaluar el uso de `@astrojs/cloudflare`.
+- `dist/`, `.astro/` y `node_modules/` estan ignorados por Git; `.agents/skills/` contiene reglas técnicas del proyecto y debe conservarse junto con la documentación.
+- Antes de publicar, validar con `pnpm run check`, `pnpm run build` y `pnpm run audit:prod`.
+- Turnstile es obligatorio antes de exponer registro/login públicamente; solo puede permanecer desactivado en localhost.
 - Si el chat acepta texto libre del usuario en produccion, sanitizar la salida antes de insertarla en el DOM.
 
 ## Estado actual
 
-El sitio compila como una landing estatica modular con enfoque visual fuerte, animaciones GSAP y preparacion para despliegue estatico en Cloudflare Workers.
+La landing compila prerenderizada dentro de un runtime Astro SSR para Cloudflare. La infraestructura de datos remota, RLS, grants, Storage, seed, Advisors y pruebas están validados para desarrollo. El siguiente incremento es implementar login y `/api/v1`; antes de exponerlos públicamente se deben verificar en el entorno Auth, SMTP, URLs permitidas, Turnstile, rate limiting y secretos.

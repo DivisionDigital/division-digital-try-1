@@ -1,0 +1,7 @@
+interface:
+  display_name: "PostgreSQL Authorization RLS"
+  short_description: "Aplica autorizacion y RLS por organizacion"
+  default_prompt: "Usa $postgresql-authorization-rls para disenar o auditar roles, membresias, permisos y politicas RLS en PostgreSQL."
+
+policy:
+  allow_implicit_invocation: true

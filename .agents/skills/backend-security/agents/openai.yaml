@@ -1,0 +1,7 @@
+interface:
+  display_name: "Backend Security"
+  short_description: "Aplica seguridad integral a servicios backend"
+  default_prompt: "Usa $backend-security para revisar o implementar autenticacion, autorizacion, secretos, validacion, archivos y auditoria."
+
+policy:
+  allow_implicit_invocation: true

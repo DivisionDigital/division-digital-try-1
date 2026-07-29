@@ -1,0 +1,7 @@
+interface:
+  display_name: "Backend Modular Architecture"
+  short_description: "Disena backends modulares y portables hacia AWS"
+  default_prompt: "Usa $backend-modular-architecture para disenar o revisar un backend modular y portable hacia AWS."
+
+policy:
+  allow_implicit_invocation: true

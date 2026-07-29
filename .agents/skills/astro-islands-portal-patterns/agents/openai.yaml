@@ -1,0 +1,7 @@
+interface:
+  display_name: "Astro Islands Portal Patterns"
+  short_description: "Integra Islands en landing y dashboards"
+  default_prompt: "Usa $astro-islands-portal-patterns para aplicar Islands a la landing, login, portal cliente y panel interno de Division Digital."
+
+policy:
+  allow_implicit_invocation: true

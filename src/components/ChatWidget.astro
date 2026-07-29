@@ -527,7 +527,9 @@
       // User message
       const userMsg = document.createElement('div');
       userMsg.className = 'widget-msg user';
-      userMsg.innerHTML = `<p>${text}</p>`;
+      const userText = document.createElement('p');
+      userText.textContent = text;
+      userMsg.appendChild(userText);
       messages.appendChild(userMsg);
 
       gsap.from(userMsg, { opacity: 0, y: 10, duration: 0.3, ease: 'back.out(1.7)' });
@@ -536,7 +538,19 @@
       const responseTimer = window.setTimeout(() => {
         const botMsg = document.createElement('div');
         botMsg.className = 'widget-msg bot';
-        botMsg.innerHTML = `<p>¡Gracias por tu interés! Un agente se pondrá en contacto contigo pronto. También puedes escribirnos directamente a nuestro <a href="#contacto" style="color: var(--accent); text-decoration: underline;">formulario de contacto</a>. 🚀</p>`;
+        const botText = document.createElement('p');
+        botText.append(
+          document.createTextNode(
+            '¡Gracias por tu interés! Un agente se pondrá en contacto contigo pronto. También puedes escribirnos directamente a nuestro ',
+          ),
+        );
+        const contactLink = document.createElement('a');
+        contactLink.href = '#contacto';
+        contactLink.textContent = 'formulario de contacto';
+        contactLink.style.color = 'var(--accent)';
+        contactLink.style.textDecoration = 'underline';
+        botText.append(contactLink, document.createTextNode('. 🚀'));
+        botMsg.appendChild(botText);
         messages.appendChild(botMsg);
 
         gsap.from(botMsg, { opacity: 0, y: 10, duration: 0.3, ease: 'back.out(1.7)' });
@@ -579,7 +593,11 @@
     };
   }
 
-  document.addEventListener('DOMContentLoaded', initChatWidget);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatWidget, { once: true });
+  } else {
+    initChatWidget();
+  }
   document.addEventListener('astro:page-load', initChatWidget);
   window.addEventListener('pagehide', () => {
     (window as Window & { __ddChatWidgetCleanup?: () => void }).__ddChatWidgetCleanup?.();
