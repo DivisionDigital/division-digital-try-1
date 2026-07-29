@@ -1,0 +1,7 @@
+interface:
+  display_name: "Astro Islands Performance"
+  short_description: "Optimiza hidratacion, estado y JavaScript"
+  default_prompt: "Usa $astro-islands-performance para optimizar hidratacion, bundles, estado compartido, accesibilidad y rendimiento de Islands Astro."
+
+policy:
+  allow_implicit_invocation: true

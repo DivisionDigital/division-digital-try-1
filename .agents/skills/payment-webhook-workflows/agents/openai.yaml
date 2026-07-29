@@ -1,0 +1,7 @@
+interface:
+  display_name: "Payment Webhook Workflows"
+  short_description: "Disena pagos, webhooks e idempotencia"
+  default_prompt: "Usa $payment-webhook-workflows para disenar el ciclo de cotizacion, pago, webhook y activacion del servicio."
+
+policy:
+  allow_implicit_invocation: true

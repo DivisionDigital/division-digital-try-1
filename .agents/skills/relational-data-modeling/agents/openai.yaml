@@ -1,0 +1,7 @@
+interface:
+  display_name: "Relational data modeling"
+  short_description: "Design PostgreSQL models for the portal"
+  default_prompt: "Use $relational-data-modeling to decide and review the data model for this change."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Astro Islands Architecture"
+  short_description: "Disena y aplica Islands en Astro"
+  default_prompt: "Usa $astro-islands-architecture para elegir directivas, separar HTML estatico, Islands de cliente y Server Islands en Astro."
+
+policy:
+  allow_implicit_invocation: true

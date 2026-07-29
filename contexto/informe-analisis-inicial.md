@@ -4,6 +4,8 @@
 **Alcance:** revisión estática del repositorio, ejecución de validaciones locales, revisión de funcionalidad implementada, rendimiento, accesibilidad, seguridad y preparación para conectar servicios.
 **Cambios en la aplicación:** ninguno; este análisis solo agrega documentación en `contexto/`.
 
+**Nota de vigencia:** este informe describe el estado técnico de la landing al 24 de julio de 2026. El flujo objetivo del portal fue corregido posteriormente y está definido en `contexto/arquitectura.md`, `contexto/datos/modelo-mvp.md` y ADR-003/ADR-005.
+
 ## 1. Resumen ejecutivo
 
 El proyecto es una landing page de una sola ruta construida con Astro 6 en modo estático. La aplicación está organizada en componentes Astro independientes y tiene un enfoque visual fuerte: animaciones GSAP, fondo interactivo con canvas, galería de servicios tipo bento, mockup de portafolio, formulario de contacto y widget de chat.

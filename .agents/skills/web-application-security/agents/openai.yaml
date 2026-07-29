@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Application Security"
+  short_description: "Revisa seguridad integral de aplicaciones web"
+  default_prompt: "Usa $web-application-security para revisar XSS, CSRF, headers, validacion, uploads, secretos, rate limiting y pruebas de seguridad."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Web Authentication Sessions"
+  short_description: "Disena login y sesiones seguras en Astro"
+  default_prompt: "Usa $web-authentication-sessions para disenar o revisar login, sesiones, cookies, middleware y acceso al portal Astro."
+
+policy:
+  allow_implicit_invocation: true

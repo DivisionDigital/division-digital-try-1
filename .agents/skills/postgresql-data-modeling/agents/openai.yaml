@@ -1,0 +1,7 @@
+interface:
+  display_name: "PostgreSQL Data Modeling"
+  short_description: "Disena PostgreSQL seguro, consistente y escalable"
+  default_prompt: "Usa $postgresql-data-modeling para disenar o revisar esquemas, migraciones, consultas y RLS en PostgreSQL."
+
+policy:
+  allow_implicit_invocation: true
